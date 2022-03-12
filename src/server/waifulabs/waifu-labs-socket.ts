@@ -1,7 +1,7 @@
 import * as WebSocket from "ws";
-
-import { WaifuLabsSocketEvent, WaifuLabsSocketResponse, WaifuLabsSocketResponseData, WaifuLabsSocketScope } from "./waifulabs";
 import * as EventEmitter from "events";
+
+import { WaifuLabsSocketEvent, WaifuLabsSocketMetadata, WaifuLabsSocketResponse, WaifuLabsSocketResponseData, WaifuLabsSocketScope } from "./waifulabs";
 import { WaifuLabsCredentials } from "./waifu-labs-credentials";
 import { SOCKET_OPEN_EVENT_NAME } from "./waifu-labs-constants";
 
@@ -9,17 +9,13 @@ export class WaifuLabsSocket {
   private static socketNumber = 0;
   private static heartbeatPeriodMs = 30000;
 
-  private connectionNumber: number;
-  private messageNumber: number;
   private eventEmitter = new EventEmitter();
-  private webSocket: WebSocket;
+  private webSocketMetadata: WaifuLabsSocketMetadata;
   private credentials: WaifuLabsCredentials;
 
   private constructor(credentials: WaifuLabsCredentials) {
     this.credentials = credentials;
-    this.webSocket = this.getNewWebSocket(credentials);
-    this.connectionNumber = WaifuLabsSocket.socketNumber;
-    this.messageNumber = this.connectionNumber;
+    this.webSocketMetadata = this.getNewWebSocket(credentials);
     WaifuLabsSocket.socketNumber++;
   }
 
@@ -29,10 +25,14 @@ export class WaifuLabsSocket {
     return waifuLabsSocket;
   }
 
-  private getNewWebSocket(credentials: WaifuLabsCredentials): WebSocket {
+  private getNewWebSocket(credentials: WaifuLabsCredentials): WaifuLabsSocketMetadata {
     const webSocket = new WebSocket(`wss://waifulabs.com/creator/socket/websocket?token=${credentials.getAuthToken()}&vsn=2.0.0`);
     this.setWebSocketHandlers(webSocket);
-    return webSocket;
+    WaifuLabsSocket.socketNumber++;
+    const connectionNumber = WaifuLabsSocket.socketNumber;
+    const messageNumber = connectionNumber;
+
+    return { webSocket, connectionNumber, messageNumber };
   }
 
   private setWebSocketHandlers(webSocket: WebSocket): void {
@@ -42,7 +42,7 @@ export class WaifuLabsSocket {
     });
 
     webSocket.on("message", (messageString: string) => {
-      this.handleMessage(messageString);
+      this.handleResponse(messageString);
     });
 
     const heartbeatInterval = setInterval(() => {
@@ -51,31 +51,40 @@ export class WaifuLabsSocket {
 
     webSocket.on("close", () => {
       clearInterval(heartbeatInterval);
-      this.webSocket = this.getNewWebSocket(this.credentials);
+      this.webSocketMetadata = this.getNewWebSocket(this.credentials);
     });
 
     webSocket.on("error", () => {
       clearInterval(heartbeatInterval);
-      this.webSocket = this.getNewWebSocket(this.credentials);
+      this.webSocketMetadata = this.getNewWebSocket(this.credentials);
     });
   }
 
   public async request<T>(eventType: WaifuLabsSocketEvent, requestData: Object, scope: WaifuLabsSocketScope): Promise<WaifuLabsSocketResponseData<T>> {
-    if (this.webSocket.readyState !== WebSocket.OPEN) {
+    const { webSocket, messageNumber, connectionNumber } = this.webSocketMetadata;
+    const readyState = webSocket.readyState;
+
+    // If the socket is closed, open a new one
+    if (readyState === WebSocket.CLOSING || readyState === WebSocket.CLOSED) {
+      this.webSocketMetadata = this.getNewWebSocket(this.credentials);
+    }
+
+    // If the socket has not connected yet, wait for it to open
+    if (readyState === WebSocket.CONNECTING) {
       await this.waitForEvent(SOCKET_OPEN_EVENT_NAME);
     }
 
-    const messageId = this.messageNumber.toString();
-    const connectionId = eventType === WaifuLabsSocketEvent.HEARTBEAT ? null : this.connectionNumber.toString();
-    this.messageNumber++;
+    const messageId = messageNumber.toString();
+    const connectionId = eventType === WaifuLabsSocketEvent.HEARTBEAT ? null : connectionNumber.toString();
+    this.webSocketMetadata.messageNumber++;
 
     const responsePromise = this.waitForEvent<WaifuLabsSocketResponseData<T>>(messageId);
     const requestBody = [connectionId, messageId, scope, eventType, requestData];
-    this.webSocket.send(JSON.stringify(requestBody));
+    webSocket.send(JSON.stringify(requestBody));
     return responsePromise;
   }
 
-  private handleMessage(messageString: string) {
+  private handleResponse(messageString: string) {
     const [_connectionId, messageId, _, _eventType, responseData] = JSON.parse(messageString) as WaifuLabsSocketResponse;
     this.eventEmitter.emit(messageId, responseData);
   }

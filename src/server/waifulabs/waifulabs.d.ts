@@ -1,3 +1,5 @@
+import type WebSocket from "ws";
+
 import { Waifu } from "@common/typings/waifu";
 
 export type WaifuSeedable = Waifu | string;
@@ -63,4 +65,10 @@ export const enum WaifuLabsSocketEvent {
 export interface WaifuLabsSocketResponseData<T = Object> {
   response: T;
   status: string;
+}
+
+export interface WaifuLabsSocketMetadata {
+  webSocket: WebSocket;
+  connectionNumber: number;
+  messageNumber: number;
 }
