@@ -1,7 +1,4 @@
-export interface Waifu {
-  seeds: string;
-  image: string;
-}
+import { Waifu } from "@common/typings/waifu";
 
 export type WaifuSeedable = Waifu | string;
 
@@ -45,10 +42,15 @@ export const enum GenerateWaifuStep {
 export type WaifuLabsSocketResponse = [
   connectionId: string,
   messageId: string,
-  scope: string,
+  scope: WaifuLabsSocketScope,
   eventType: WaifuLabsSocketEvent,
   responseData: WaifuLabsSocketResponseData,
 ];
+
+export const enum WaifuLabsSocketScope {
+  API = "api",
+  PHOENIX = "phoenix",
+}
 
 export const enum WaifuLabsSocketEvent {
   HEARTBEAT = "heartbeat",

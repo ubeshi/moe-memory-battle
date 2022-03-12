@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from "axios";
 import * as SetCookieParser from "set-cookie-parser";
 
-declare module 'axios' {
+declare module "axios" {
   interface HeadersDefaults {
     cookie: string;
   }
@@ -13,7 +13,7 @@ export class WaifuLabsAxios {
   private static axiosInstance = axios.create({
     baseURL: WaifuLabsAxios.baseUrl,
     withCredentials: true,
-    responseType: 'text',
+    responseType: "text",
   });
 
   private static waifuLabsKey: string | undefined;

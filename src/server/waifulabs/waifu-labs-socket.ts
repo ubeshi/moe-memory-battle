@@ -1,13 +1,13 @@
 import * as WebSocket from "ws";
 
-import { WaifuLabsSocketEvent, WaifuLabsSocketResponse, WaifuLabsSocketResponseData } from "./waifulabs";
+import { WaifuLabsSocketEvent, WaifuLabsSocketResponse, WaifuLabsSocketResponseData, WaifuLabsSocketScope } from "./waifulabs";
 import * as EventEmitter from "events";
 import { WaifuLabsCredentials } from "./waifu-labs-credentials";
 import { SOCKET_OPEN_EVENT_NAME } from "./waifu-labs-constants";
 
 export class WaifuLabsSocket {
   private static socketNumber = 0;
-  private static heartbeatPeriodMs = 1000;
+  private static heartbeatPeriodMs = 30000;
 
   private connectionNumber: number;
   private messageNumber: number;
@@ -31,46 +31,47 @@ export class WaifuLabsSocket {
 
   private getNewWebSocket(credentials: WaifuLabsCredentials): WebSocket {
     const webSocket = new WebSocket(`wss://waifulabs.com/creator/socket/websocket?token=${credentials.getAuthToken()}&vsn=2.0.0`);
-    this.setWebSocketHandlers();
+    this.setWebSocketHandlers(webSocket);
     return webSocket;
   }
 
-  private setWebSocketHandlers(): void {
-    this.webSocket.on("open", () => {
-      this.request(WaifuLabsSocketEvent.JOIN, {});
+  private setWebSocketHandlers(webSocket: WebSocket): void {
+    webSocket.on("open", () => {
+      this.request(WaifuLabsSocketEvent.JOIN, {}, WaifuLabsSocketScope.API);
       this.eventEmitter.emit(SOCKET_OPEN_EVENT_NAME);
     });
 
-    this.webSocket.on("message", (messageString: string) => {
+    webSocket.on("message", (messageString: string) => {
       this.handleMessage(messageString);
     });
 
     const heartbeatInterval = setInterval(() => {
-      this.request(WaifuLabsSocketEvent.HEARTBEAT, {});
+      this.request(WaifuLabsSocketEvent.HEARTBEAT, {}, WaifuLabsSocketScope.PHOENIX);
     }, WaifuLabsSocket.heartbeatPeriodMs);
 
-    this.webSocket.on("close", () => {
+    webSocket.on("close", () => {
       clearInterval(heartbeatInterval);
       this.webSocket = this.getNewWebSocket(this.credentials);
     });
 
-    this.webSocket.on("error", () => {
+    webSocket.on("error", () => {
       clearInterval(heartbeatInterval);
       this.webSocket = this.getNewWebSocket(this.credentials);
     });
   }
 
-  public async request<T>(eventType: WaifuLabsSocketEvent, requestData: Object, scope = "api"): Promise<WaifuLabsSocketResponseData<T>> {
+  public async request<T>(eventType: WaifuLabsSocketEvent, requestData: Object, scope: WaifuLabsSocketScope): Promise<WaifuLabsSocketResponseData<T>> {
     if (this.webSocket.readyState !== WebSocket.OPEN) {
       await this.waitForEvent(SOCKET_OPEN_EVENT_NAME);
     }
 
     const messageId = this.messageNumber.toString();
-    const connectionId = this.connectionNumber.toString();
+    const connectionId = eventType === WaifuLabsSocketEvent.HEARTBEAT ? null : this.connectionNumber.toString();
     this.messageNumber++;
 
     const responsePromise = this.waitForEvent<WaifuLabsSocketResponseData<T>>(messageId);
-    this.webSocket.send(JSON.stringify([connectionId, messageId, scope, eventType, requestData]));
+    const requestBody = [connectionId, messageId, scope, eventType, requestData];
+    this.webSocket.send(JSON.stringify(requestBody));
     return responsePromise;
   }
 

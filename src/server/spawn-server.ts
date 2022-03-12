@@ -1,7 +1,7 @@
 import * as cors from "cors";
 import * as express from "express";
 import * as http from "http";
-import * as path from 'path';
+import * as path from "path";
 import { AddressInfo } from "net";
 
 import api from "./api/api";
@@ -14,11 +14,11 @@ export async function spawnServer(): Promise<http.Server> {
   app.use(cors());
   
   // Direct all api calls to the api
-  app.use('/api', api);
+  app.use("/api", api);
 
   // Direct all non-api calls to the SPA
-  app.use('/', express.static(path.join(__dirname, '../client'))); // Express will serve index.html and supporting resources
-  app.use('/', (_req, res) => res.sendFile(path.join(__dirname, '../client/index.html'))); // SPA router handles all other paths
+  app.use("/", express.static(path.join(__dirname, "../client"))); // Express will serve index.html and supporting resources
+  app.use("/", (_req, res) => res.sendFile(path.join(__dirname, "../client/index.html"))); // SPA router handles all other paths
 
   const server = new http.Server(app);
 

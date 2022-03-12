@@ -1,11 +1,11 @@
-import * as express from 'express';
+import * as express from "express";
 
-import { WaifuLabsClient } from '@server/waifulabs/waifu-labs-client';
+import { WaifuLabsClient } from "@server/waifulabs/waifu-labs-client";
 
 const router = express.Router();
 export default router;
 
-router.get('/random', async (_req, res) => {
+router.get("/random", async (_req, res) => {
   try {
     const waifuLabsClient = await WaifuLabsClient.getWaifuLabsClient();
     const randomWaifus = await waifuLabsClient.getWaifus();
