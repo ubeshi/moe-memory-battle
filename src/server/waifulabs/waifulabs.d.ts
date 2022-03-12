@@ -70,5 +70,4 @@ export interface WaifuLabsSocketResponseData<T = Object> {
 export interface WaifuLabsSocketMetadata {
   webSocket: WebSocket;
   connectionNumber: number;
-  messageNumber: number;
 }

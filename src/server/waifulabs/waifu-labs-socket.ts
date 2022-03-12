@@ -7,6 +7,7 @@ import { SOCKET_OPEN_EVENT_NAME } from "./waifu-labs-constants";
 
 export class WaifuLabsSocket {
   private static socketNumber = 0;
+  private static _transactionNumber = 0;
   private static heartbeatPeriodMs = 30000;
 
   private eventEmitter = new EventEmitter();
@@ -16,7 +17,6 @@ export class WaifuLabsSocket {
   private constructor(credentials: WaifuLabsCredentials) {
     this.credentials = credentials;
     this.webSocketMetadata = this.getNewWebSocket(credentials);
-    WaifuLabsSocket.socketNumber++;
   }
 
   public static async getWaifuLabsSocket(): Promise<WaifuLabsSocket> {
@@ -25,14 +25,15 @@ export class WaifuLabsSocket {
     return waifuLabsSocket;
   }
 
+  private static getNewTransactionNumber(): number {
+    return this._transactionNumber++;
+  }
+
   private getNewWebSocket(credentials: WaifuLabsCredentials): WaifuLabsSocketMetadata {
     const webSocket = new WebSocket(`wss://waifulabs.com/creator/socket/websocket?token=${credentials.getAuthToken()}&vsn=2.0.0`);
     this.setWebSocketHandlers(webSocket);
-    WaifuLabsSocket.socketNumber++;
-    const connectionNumber = WaifuLabsSocket.socketNumber;
-    const messageNumber = connectionNumber;
-
-    return { webSocket, connectionNumber, messageNumber };
+    const connectionNumber = WaifuLabsSocket.socketNumber++;
+    return { webSocket, connectionNumber };
   }
 
   private setWebSocketHandlers(webSocket: WebSocket): void {
@@ -61,8 +62,10 @@ export class WaifuLabsSocket {
   }
 
   public async request<T>(eventType: WaifuLabsSocketEvent, requestData: Object, scope: WaifuLabsSocketScope): Promise<WaifuLabsSocketResponseData<T>> {
-    const { webSocket, messageNumber, connectionNumber } = this.webSocketMetadata;
+    const { webSocket, connectionNumber } = this.webSocketMetadata;
     const readyState = webSocket.readyState;
+    const transactionId = WaifuLabsSocket.getNewTransactionNumber().toString();
+    const connectionId = eventType === WaifuLabsSocketEvent.HEARTBEAT ? null : connectionNumber.toString();
 
     // If the socket is closed, open a new one
     if (readyState === WebSocket.CLOSING || readyState === WebSocket.CLOSED) {
@@ -74,18 +77,15 @@ export class WaifuLabsSocket {
       await this.waitForEvent(SOCKET_OPEN_EVENT_NAME);
     }
 
-    const messageId = messageNumber.toString();
-    const connectionId = eventType === WaifuLabsSocketEvent.HEARTBEAT ? null : connectionNumber.toString();
-    this.webSocketMetadata.messageNumber++;
-
-    const responsePromise = this.waitForEvent<WaifuLabsSocketResponseData<T>>(messageId);
-    const requestBody = [connectionId, messageId, scope, eventType, requestData];
+    const responsePromise = this.waitForEvent<WaifuLabsSocketResponseData<T>>(transactionId);
+    const requestBody = [connectionId, transactionId, scope, eventType, requestData];
     webSocket.send(JSON.stringify(requestBody));
     return responsePromise;
   }
 
   private handleResponse(messageString: string) {
     const [_connectionId, messageId, _, _eventType, responseData] = JSON.parse(messageString) as WaifuLabsSocketResponse;
+    console.dir(JSON.parse(messageString), { depth: null });
     this.eventEmitter.emit(messageId, responseData);
   }
 
