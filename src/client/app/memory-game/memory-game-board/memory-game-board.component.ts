@@ -26,7 +26,6 @@ export class MemoryGameBoardComponent implements OnInit {
   constructor(private waifuApiService: WaifuApiService) { }
 
   private memoryGameState = MemoryGameState.NO_CARDS_REVEALED;
-  private firstFlippedCard: Card | undefined;
 
   public deck: Deck = [];
 
@@ -85,7 +84,6 @@ export class MemoryGameBoardComponent implements OnInit {
 
   private handleNoCardsRevealedState(clickedCard: Card): void {
     this.flipCard(clickedCard);
-    this.firstFlippedCard = clickedCard;
     this.memoryGameState = MemoryGameState.FIRST_CARD_REVEALED;
   }
 
@@ -93,28 +91,39 @@ export class MemoryGameBoardComponent implements OnInit {
     this.flipCard(clickedCard);
     this.memoryGameState = MemoryGameState.SECOND_CARD_REVEALED;
 
+    const faceUpCards = this.getFaceUpCardsFromDeck(this.deck);
+    const isPair = faceUpCards.every((card) => card.image === faceUpCards[0].image);
+    
     const timeout = setTimeout(() => {
       clearTimeout(timeout);
 
-      const isClickedCardMatching = clickedCard.image === this.firstFlippedCard?.image;
-      if (isClickedCardMatching) { // Remove matched cards from the deck
-        this.deck = this.removePairFromDeckByImage(this.deck, clickedCard.image);
-      } else {
-        this.flipCard(clickedCard);
-        if (this.firstFlippedCard) {
-          this.flipCard(this.firstFlippedCard);
-        }
+      if (isPair) { // Remove matched cards from the deck
+        this.deck = this.removeCardsFromDeck(this.deck, faceUpCards);
+      } else { // Flip the cards back down
+        faceUpCards.forEach(this.flipCard);
       }
       this.memoryGameState = MemoryGameState.NO_CARDS_REVEALED;
     }, 1000);  
   }
 
-  private removePairFromDeckByImage(deck: Deck, image: SafeUrl): Deck {
+  private getFaceUpCardsFromDeck(deck: Deck): Card[] {
+    return deck
+      .filter(this.isNotNull)
+      .filter((card) => card.shownFace === CardFace.FRONT);
+  }
+
+  private removeCardsFromDeck(deck: Deck, cards: Card[]): Deck {
     deck = deck.slice();
-    const firstCardIndex = deck.findIndex((card) => card?.image === image);
-    deck[firstCardIndex] = null;
-    const secondCardIndex = deck.findIndex((card) => card?.image === image);
-    deck[secondCardIndex] = null;
+    cards.forEach((card) => {
+      const cardIndex = deck.indexOf(card);
+      if (cardIndex !== -1) {
+        deck[cardIndex] = null;
+      }
+    });
     return deck;
+  }
+
+  private isNotNull<T>(item: T | null): item is T {
+    return item !== null;
   }
 }
