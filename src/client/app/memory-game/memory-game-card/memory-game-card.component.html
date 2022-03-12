@@ -1,1 +1,19 @@
-<img [src]="frontImage"/>
+<div class="card rounded">
+  <ng-container *ngIf="shownFace === CardFace.FRONT">
+    <ng-container *ngTemplateOutlet="cardFront"></ng-container>
+  </ng-container>
+  
+  <ng-container *ngIf="shownFace === CardFace.BACK">
+    <ng-container *ngTemplateOutlet="cardBack"></ng-container>
+  </ng-container>
+</div>
+
+<ng-template #cardFront>
+  <img *ngIf="frontImage" class="img-fluid" [src]="frontImage"/>
+  <span *ngIf="!frontImage">Front</span>
+</ng-template>
+
+<ng-template #cardBack>
+  <img *ngIf="backImage" class="img-fluid" [src]="backImage"/>
+  <span *ngIf="!backImage">Back</span>
+</ng-template>

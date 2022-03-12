@@ -1,3 +1,7 @@
-<memory-game-card *ngFor="let cardImage of cardImages"
-  [frontImage]="cardImage"
-></memory-game-card>
+<div class="d-flex flex-wrap">
+  <memory-game-card *ngFor="let card of cards"
+    [frontImage]="card.image"
+    [shownFace]="card.shownFace"
+    (click)="handleCardClicked(card)"
+  ></memory-game-card>
+</div>

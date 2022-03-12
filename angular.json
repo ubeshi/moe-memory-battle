@@ -31,7 +31,8 @@
               "src/client/assets"
             ],
             "styles": [
-              "src/client/styles.scss"
+              "src/client/styles.scss",
+              "node_modules/bootstrap/scss/bootstrap.scss"
             ],
             "scripts": []
           },
