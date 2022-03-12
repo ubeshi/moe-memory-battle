@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/server",
+    "target": "es2016",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": [
+    "./src/client"
+  ]
+}
