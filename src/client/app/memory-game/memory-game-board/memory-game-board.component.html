@@ -1,7 +1,10 @@
-<div class="d-flex flex-wrap">
-  <memory-game-card *ngFor="let card of cards"
-    [frontImage]="card.image"
-    [shownFace]="card.shownFace"
-    (click)="handleCardClicked(card)"
-  ></memory-game-card>
+<div class="row row-cols-8 g-0">
+  <div class="m-2 card-slot" *ngFor="let card of deck">
+    <memory-game-card *ngIf="card !== null"
+      class="w-100 h-100"
+      [frontImage]="card.image"
+      [shownFace]="card.shownFace"
+      (click)="handleCardClicked(card)"
+    ></memory-game-card>
+  </div>
 </div>

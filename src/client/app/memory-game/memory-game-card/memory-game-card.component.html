@@ -1,4 +1,4 @@
-<div class="card rounded">
+<div class="w-100 h-100 rounded border border-dark shadow-sm" role="button">
   <ng-container *ngIf="shownFace === CardFace.FRONT">
     <ng-container *ngTemplateOutlet="cardFront"></ng-container>
   </ng-container>
@@ -9,11 +9,13 @@
 </div>
 
 <ng-template #cardFront>
-  <img *ngIf="frontImage" class="img-fluid" [src]="frontImage"/>
+  <img *ngIf="frontImage" class="img-fluid rounded" [src]="frontImage"/>
   <span *ngIf="!frontImage">Front</span>
 </ng-template>
 
 <ng-template #cardBack>
-  <img *ngIf="backImage" class="img-fluid" [src]="backImage"/>
-  <span *ngIf="!backImage">Back</span>
+  <img *ngIf="backImage" class="img-fluid rounded" [src]="backImage"/>
+  <div *ngIf="!backImage" class="w-100 h-100 d-flex justify-content-center align-items-center">
+    <span>?</span>
+  </div>
 </ng-template>
