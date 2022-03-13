@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { SafeUrl } from "@angular/platform-browser";
-import { CardFace } from "../memory-game-constants";
+import { CardFace } from "@common/typings/card";
 
 @Component({
   selector: "memory-game-card",

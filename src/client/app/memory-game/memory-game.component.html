@@ -1,0 +1,8 @@
+<div class="container">
+  <memory-game-board
+    (pairMatched)="handlePairMatched($event)"
+  ></memory-game-board>
+</div>
+<memory-game-player-hand
+  [cards]="playerHand"
+></memory-game-player-hand>

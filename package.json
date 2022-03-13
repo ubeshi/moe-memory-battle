@@ -4,7 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "node ./dist/server/index.js",
-    "build": "rimraf ./dist/* && ng build && ttsc --p ./tsconfig.server.json",
+    "build": "npm run build:client && npm run build:common && npm run build:server",
+    "build:client": "rimraf ./dist/client/* && ng build",
+    "build:common": "rimraf ./dist/common/* && ttsc --p ./tsconfig.common.json",
+    "build:server": "rimraf ./dist/server/* && ttsc --p ./tsconfig.server.json",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

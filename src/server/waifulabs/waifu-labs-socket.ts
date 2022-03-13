@@ -85,7 +85,6 @@ export class WaifuLabsSocket {
 
   private handleResponse(messageString: string) {
     const [_connectionId, messageId, _, _eventType, responseData] = JSON.parse(messageString) as WaifuLabsSocketResponse;
-    console.dir(JSON.parse(messageString), { depth: null });
     this.eventEmitter.emit(messageId, responseData);
   }
 

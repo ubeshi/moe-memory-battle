@@ -1,18 +1,12 @@
-import { Component, OnInit } from "@angular/core";
-import { SafeUrl } from "@angular/platform-browser";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { WaifuApiService } from "@client/app/services/waifu-api/waifu-api.service";
-import { CardFace } from "../memory-game-constants";
+import { Card, CardFace } from "@common/typings/card";
 
 const enum MemoryGameState {
   NO_CARDS_REVEALED,
   FIRST_CARD_REVEALED,
   SECOND_CARD_REVEALED,
 };
-
-interface Card {
-  image: SafeUrl;
-  shownFace: CardFace;
-}
 
 type Deck = Array<Card | null>;
 
@@ -22,6 +16,7 @@ type Deck = Array<Card | null>;
   styleUrls: ["./memory-game-board.component.scss"],
 })
 export class MemoryGameBoardComponent implements OnInit {
+  @Output() pairMatched = new EventEmitter<Card>();
 
   constructor(private waifuApiService: WaifuApiService) { }
 
@@ -99,6 +94,7 @@ export class MemoryGameBoardComponent implements OnInit {
 
       if (isPair) { // Remove matched cards from the deck
         this.deck = this.removeCardsFromDeck(this.deck, faceUpCards);
+        this.pairMatched.emit(faceUpCards[0]);
       } else { // Flip the cards back down
         faceUpCards.forEach(this.flipCard);
       }

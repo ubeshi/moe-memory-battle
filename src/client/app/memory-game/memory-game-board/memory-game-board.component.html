@@ -1,7 +1,7 @@
 <div class="row row-cols-8 g-0">
-  <div class="m-2 card-slot" *ngFor="let card of deck">
+  <div class="card-slot" *ngFor="let card of deck">
     <memory-game-card *ngIf="card !== null"
-      class="w-100 h-100"
+      class="card"
       [frontImage]="card.image"
       [shownFace]="card.shownFace"
       (click)="handleCardClicked(card)"

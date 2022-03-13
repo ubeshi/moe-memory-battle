@@ -1,1 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+
+.row-cols-8 > * {
+  flex: 0 0 12.5%;
+  max-width: 12.5%;
+}

@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist/server",
+    "outDir": "./dist/common",
     "target": "es2016",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -11,6 +11,6 @@
   },
   "exclude": [
     "./src/client",
-    "./src/common"
+    "./src/server"
   ]
 }

@@ -1,4 +1,18 @@
 .card-slot {
-  width: 100px;
-  height: 100px;
+  padding-top: 12.5%;
+  position: relative;
+  transform: scale(0.9);
+  transition: all 0.2s;
+
+  &:hover {
+    transform: scale(0.95);
+  }
+}
+
+.card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
