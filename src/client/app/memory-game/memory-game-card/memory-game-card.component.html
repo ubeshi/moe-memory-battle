@@ -9,13 +9,13 @@
 </div>
 
 <ng-template #cardFront>
-  <img *ngIf="frontImage" class="img-fluid rounded" [src]="frontImage"/>
-  <span *ngIf="!frontImage">Front</span>
+  <img *ngIf="_frontImage" class="img-fluid rounded" [src]="_frontImage"/>
+  <span *ngIf="!_frontImage">Front</span>
 </ng-template>
 
 <ng-template #cardBack>
-  <img *ngIf="backImage" class="img-fluid rounded" [src]="backImage"/>
-  <div *ngIf="!backImage" class="w-100 h-100 d-flex justify-content-center align-items-center">
+  <img *ngIf="_backImage" class="img-fluid rounded" [src]="_backImage"/>
+  <div *ngIf="!_backImage" class="w-100 h-100 d-flex justify-content-center align-items-center">
     <span>?</span>
   </div>
 </ng-template>

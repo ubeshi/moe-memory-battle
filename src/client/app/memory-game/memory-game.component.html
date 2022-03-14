@@ -1,8 +1,12 @@
+<memory-game-hand
+  [cards]="aiHand"
+></memory-game-hand>
 <div class="container">
   <memory-game-board
-    (pairMatched)="handlePairMatched($event)"
+    [deck]="deck"
+    (playerSelectedCard)="handlePlayerSelectedCard($event)"
   ></memory-game-board>
 </div>
-<memory-game-player-hand
+<memory-game-hand
   [cards]="playerHand"
-></memory-game-player-hand>
+></memory-game-hand>

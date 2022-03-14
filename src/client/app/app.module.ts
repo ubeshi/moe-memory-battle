@@ -7,7 +7,7 @@ import { AppComponent } from "./app.component";
 
 import { MemoryGameBoardComponent } from "./memory-game/memory-game-board/memory-game-board.component";
 import { MemoryGameCardComponent } from "./memory-game/memory-game-card/memory-game-card.component";
-import { MemoryGamePlayerHandComponent } from "./memory-game/memory-game-player-hand/memory-game-player-hand.component";
+import { MemoryGameHandComponent } from "./memory-game/memory-game-hand/memory-game-hand.component";
 import { MemoryGameComponent } from "./memory-game/memory-game.component";
 
 @NgModule({
@@ -16,7 +16,7 @@ import { MemoryGameComponent } from "./memory-game/memory-game.component";
     MemoryGameComponent,
     MemoryGameBoardComponent,
     MemoryGameCardComponent,
-    MemoryGamePlayerHandComponent,
+    MemoryGameHandComponent,
   ],
   imports: [
     BrowserModule,

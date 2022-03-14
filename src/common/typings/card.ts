@@ -1,7 +1,5 @@
-import { SafeUrl } from "@angular/platform-browser";
-
 export interface Card {
-  image: SafeUrl;
+  imageUrl: string;
   shownFace: CardFace;
 }
 
@@ -9,3 +7,7 @@ export enum CardFace {
   FRONT,
   BACK,
 }
+
+export type DeckSlotContent = Card | null;
+
+export type Deck = DeckSlotContent[];

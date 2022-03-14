@@ -2,7 +2,7 @@
   <div class="card-slot" *ngFor="let card of deck">
     <memory-game-card *ngIf="card !== null"
       class="card"
-      [frontImage]="card.image"
+      [frontImage]="card.imageUrl"
       [shownFace]="card.shownFace"
       (click)="handleCardClicked(card)"
     ></memory-game-card>
