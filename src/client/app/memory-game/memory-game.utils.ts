@@ -44,6 +44,17 @@ export function getCardCopy(card: Card): Card {
   };
 }
 
+export function removeCardsFromDeck(deck: Deck, cards: Card[]): Deck {
+  deck = deck.slice();
+  cards.forEach((card) => {
+    const cardIndex = deck.indexOf(card);
+    if (cardIndex !== -1) {
+      deck[cardIndex] = null;
+    }
+  });
+  return deck;
+}
+
 export function isDeckEmpty(deck: Deck): boolean {
   return deck.every((deckSlot) => deckSlot === null);
 }

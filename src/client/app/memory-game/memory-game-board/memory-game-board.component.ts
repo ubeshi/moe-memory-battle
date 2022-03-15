@@ -1,32 +1,22 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Card, Deck } from "@common/typings/card";
-import { MemoryGamePhase } from "../memory-game.component";
+import { MemoryGameController } from "@common/typings/player";
+import { Observable, Subject } from "rxjs";
 
 @Component({
   selector: "memory-game-board",
   templateUrl: "./memory-game-board.component.html",
   styleUrls: ["./memory-game-board.component.scss"],
 })
-export class MemoryGameBoardComponent {
-  @Input() memoryGamePhase = MemoryGamePhase.PLAYER_TURN_NO_CARDS_REVEALED;
+export class MemoryGameBoardComponent implements MemoryGameController {
   @Input() deck: Deck = [];
 
-  @Output() playerSelectedCard = new EventEmitter<Card>();
-
-  public handleCardClicked(card: Card): void {
-    if (this.isInteractableGamePhase(this.memoryGamePhase)) {
-      this.playerSelectedCard.emit(card);
-    }
+  private _positionClicked = new Subject<number>();
+  public get positionClicked(): Observable<number> {
+    return this._positionClicked.asObservable();
   }
 
-  private isInteractableGamePhase(gamePhase: MemoryGamePhase): boolean {
-    if (gamePhase === MemoryGamePhase.PLAYER_TURN_NO_CARDS_REVEALED) {
-      return true;
-    }
-    if (gamePhase === MemoryGamePhase.PLAYER_TURN_FIRST_CARD_REVEALED) {
-      return true;
-    }
-    return false;
+  public handlePositionClicked(position: number): void {
+    this._positionClicked.next(position);
   }
-
 }

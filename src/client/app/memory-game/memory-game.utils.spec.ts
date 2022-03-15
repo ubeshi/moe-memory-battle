@@ -10,6 +10,7 @@ import {
   getFaceUpCardsFromDeck,
   isDeckEmpty,
   isNotNull,
+  removeCardsFromDeck,
   wait
 } from "./memory-game.utils";
 
@@ -39,6 +40,7 @@ describe("memory-game utils", () => {
       const mockDeck = [faceDownCard1, faceDownCard2, faceDownCard3];
       expect(getFaceUpCardsFromDeck(mockDeck).length).toBe(0);
     });
+
     it("should return only the face up cards", () => {
       const faceUpCard1 = { shownFace: CardFace.FRONT } as Card;
       const faceUpCard2 = { shownFace: CardFace.FRONT } as Card;
@@ -196,6 +198,33 @@ describe("memory-game utils", () => {
     it("should return a card with the same values", () => {
       const returnedCard = getCardCopy(mockCard);
       expect(returnedCard).toEqual(mockCard);
+    });
+  });
+
+  describe("removeCardsFromDeck()", () => {
+    let mockDeck: Deck;
+    let mockCard1: Card;
+    let mockCard2: Card;
+
+    beforeEach(() => {
+      mockCard1 = { imageUrl: "foo", shownFace: CardFace.FRONT } as Card;
+      mockCard2 = { imageUrl: "bar", shownFace: CardFace.FRONT } as Card;
+      mockDeck = [mockCard1, mockCard2] as Deck;
+    });
+
+    it("should return a deck with a different reference", () => {
+      const returnedDeck = removeCardsFromDeck(mockDeck, []);
+      expect(returnedDeck).not.toBe(mockDeck);
+    });
+
+    it("should return a deck without the removed cards", () => {
+      const returnedDeck = removeCardsFromDeck(mockDeck, [mockCard1]);
+      expect(returnedDeck.includes(mockCard1)).toBeFalse();
+    });
+
+    it("should return a deck with the cards that were not removed", () => {
+      const returnedDeck = removeCardsFromDeck(mockDeck, [mockCard1]);
+      expect(returnedDeck.includes(mockCard2)).toBeTrue();
     });
   });
 

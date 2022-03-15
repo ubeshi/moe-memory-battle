@@ -1,12 +1,11 @@
 <memory-game-hand
-  [cards]="aiHand"
+  [cards]="players[1]?.hand ?? []"
 ></memory-game-hand>
 <div class="container">
-  <memory-game-board
+  <memory-game-board #gameBoard
     [deck]="deck"
-    (playerSelectedCard)="handlePlayerSelectedCard($event)"
   ></memory-game-board>
 </div>
 <memory-game-hand
-  [cards]="playerHand"
+  [cards]="players[0]?.hand ?? []"
 ></memory-game-hand>

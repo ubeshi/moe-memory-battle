@@ -1,10 +1,10 @@
 <div class="row row-cols-8 g-0">
-  <div class="card-slot" *ngFor="let card of deck">
+  <div class="card-slot" *ngFor="let card of deck; index as position">
     <memory-game-card *ngIf="card !== null"
       class="card"
       [frontImage]="card.imageUrl"
       [shownFace]="card.shownFace"
-      (click)="handleCardClicked(card)"
+      (click)="handlePositionClicked(position)"
     ></memory-game-card>
   </div>
 </div>

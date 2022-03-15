@@ -1,6 +1,6 @@
 import { AiDifficulty } from "@common/typings/ai";
 import { Card, CardFace, Deck, DeckSlotContent } from "@common/typings/card";
-import { getCardCopy, getDeckSlotCopy, getFaceDownCardsFromDeck, getFaceUpCardsFromDeck, isNotNull } from "../memory-game.utils";
+import { getDeckSlotCopy, getFaceDownCardsFromDeck, getFaceUpCardsFromDeck, isNotNull } from "../memory-game.utils";
 
 export function addContentToMemory(memory: Deck, content: DeckSlotContent, position: number): Deck {
   memory = memory.slice();
@@ -35,6 +35,32 @@ export function getAnyPairPositionFromMemory(memory: Deck): [number, number] | n
 export function getRememberedPositionsByImage(memory: Deck, imageUrl: string): number[] {
   const rememberedCards = getFaceUpCardsFromDeck(memory).filter((card) => card.imageUrl === imageUrl);
   return rememberedCards.map((card) => memory.indexOf(card));
+}
+
+export function getFirstGuessPosition(memory: Deck): number {
+  const rememberedPosition = getAnyPairPositionFromMemory(memory);
+  if (isNotNull(rememberedPosition)) {
+    return rememberedPosition[0];
+  } else {
+    return getRandomUnknownPosition(memory);
+  }
+}
+
+export function getSecondGuessPosition(memory: Deck, firstGuessedPosition: number): number {
+  const firstGuessedCard = memory[firstGuessedPosition];
+  const rememberedCards = getFaceUpCardsFromDeck(memory);
+  const matchingRememberedCards = rememberedCards.filter((card) => card.imageUrl === firstGuessedCard?.imageUrl);
+
+  if (matchingRememberedCards.length === 2) {
+    const matchingCardPositions = matchingRememberedCards.map((card) => memory.indexOf(card));
+    if (matchingCardPositions[0] !== firstGuessedPosition) {
+      return matchingCardPositions[0];
+    } else {
+      return matchingCardPositions[1];
+    }
+  } else {
+    return getRandomUnknownPosition(memory);
+  }
 }
 
 export function getRandomUnknownPosition(memory: Deck): number {

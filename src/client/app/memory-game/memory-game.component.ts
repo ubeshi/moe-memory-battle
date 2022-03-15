@@ -1,90 +1,104 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, ViewChild } from "@angular/core";
 import { AiDifficulty } from "@common/typings/ai";
-import { Card, CardFace, Deck } from "@common/typings/card";
+import { Card, CardFace, Deck, DeckSlotContent } from "@common/typings/card";
+import { MemoryGameGuessResult, MemoryGamePlayer } from "@common/typings/player";
 import { WaifuApiService } from "../services/waifu-api/waifu-api.service";
-import { MemoryGameAi } from "./memory-game-ai/memory-game-ai";
-import { shuffleArray } from "./memory-game-ai/memory-game-ai.utils";
-import { flipCardFaceDown, flipCardFaceUp, getFaceUpCardsFromDeck, isNotNull, wait } from "./memory-game.utils";
+import { MemoryGameAiPlayer } from "./memory-game-ai-player/memory-game-ai-player";
+import { shuffleArray } from "./memory-game-ai-player/memory-game-ai-player.utils";
+import { MemoryGameBoardComponent } from "./memory-game-board/memory-game-board.component";
+import { MemoryGameHumanPlayer } from "./memory-game-human-player/memory-game-human-player";
+import { flipCardFaceDown, flipCardFaceUp, isDeckEmpty, isNotNull, removeCardsFromDeck, wait } from "./memory-game.utils";
 
-export const enum MemoryGamePhase {
-  PLAYER_TURN_NO_CARDS_REVEALED,
-  PLAYER_TURN_FIRST_CARD_REVEALED,
-  PLAYER_TURN_SECOND_CARD_REVEALED,
-  AI_TURN,
-};
-
-const AI_TURN_PHASE_DELAY = 1000;
-const PLAYER_TURN_END_DELAY = 1000;
+const TURN_END_DELAY = 1000;
 
 @Component({
   selector: "memory-game",
   templateUrl: "./memory-game.component.html",
   // styleUrls: ["./memory-game.component.scss"],
 })
-export class MemoryGameComponent implements OnInit {
-  public playerHand: Card[] = [];
-  public aiHand: Card[] = [];
+export class MemoryGameComponent implements AfterViewInit {
   public deck: Deck = [];
-  private memoryGameState = MemoryGamePhase.PLAYER_TURN_NO_CARDS_REVEALED;
-  private memoryGameAi: MemoryGameAi | undefined;
+  public players: MemoryGamePlayer[] = [];
 
-  constructor(
-    private waifuApiService: WaifuApiService
-  ) { }
+  @ViewChild("gameBoard") memoryGameBoard: MemoryGameBoardComponent | undefined;
 
-  async ngOnInit() {
+  constructor(private waifuApiService: WaifuApiService) { }
+
+  async ngAfterViewInit(): Promise<void> {
     this.deck = await this.getNewCards();
-    this.memoryGameAi = new MemoryGameAi(this.deck.slice(), AiDifficulty.EASY);
+    this.players = [
+      new MemoryGameHumanPlayer(this.memoryGameBoard!),
+      new MemoryGameAiPlayer(this.deck.slice(), AiDifficulty.EASY),
+    ];
+    this.playGame();
   }
 
-  private async conductAiTurn(): Promise<void> {
-    await wait(AI_TURN_PHASE_DELAY);
-    const isDeckEmpty = this.deck.every((cardSlot) => cardSlot === null);
-    if (isDeckEmpty) {
-      return;
-    } else {
-      const aiGuessedPositions = this.memoryGameAi!.takeTurn();
+  private async playGame(): Promise<void> {
+    while (!isDeckEmpty(this.deck)) {
+      for (let player of this.players) {
+        const { card: firstGuessedCard, position: firstGuessedPosition } = await this.getPlayerFirstGuessResult(player);
+        this.players.forEach((player) => player.rememberContentAtPosition(firstGuessedCard, firstGuessedPosition));
 
-      if (aiGuessedPositions[0] === aiGuessedPositions[1]) {
-        console.error(`AI guessed same position twice: ${aiGuessedPositions[0]}, ${aiGuessedPositions[1]}`);
-      }
+        const { card: secondGuessedCard, position: secondGuessedPosition } = await this.getPlayerSecondGuessResult(player, firstGuessedPosition);
+        this.players.forEach((player) => player.rememberContentAtPosition(secondGuessedCard, secondGuessedPosition));
 
-      const aiGuessedCards = aiGuessedPositions.map((position) => this.deck[position]);
-      if (isNotNull(aiGuessedCards[0]) && isNotNull(aiGuessedCards[1])) {
-        flipCardFaceUp(aiGuessedCards[0]);
-        await wait(AI_TURN_PHASE_DELAY);
-        
-        flipCardFaceUp(aiGuessedCards[1]);
-        await wait(AI_TURN_PHASE_DELAY);
+        await wait(TURN_END_DELAY);
 
-        if (aiGuessedCards[0].imageUrl === aiGuessedCards[1].imageUrl) {
-          this.handlePairMatched(aiGuessedCards[0]);
+        const isPair = firstGuessedCard.imageUrl === secondGuessedCard.imageUrl;
+        if (isPair) {
+          this.handlePairMatched(firstGuessedCard, player);
         } else {
-          flipCardFaceDown(aiGuessedCards[0]);
-          flipCardFaceDown(aiGuessedCards[1]);
+          flipCardFaceDown(firstGuessedCard);
+          flipCardFaceDown(secondGuessedCard);
         }
-      } else {
-        throw new Error("AI guessed empty position!");
       }
     }
   }
 
-  public handlePairMatched(cardFromPair: Card): void {
+  private async getPlayerFirstGuessResult(player: MemoryGamePlayer): Promise<MemoryGameGuessResult> {
+    let firstGuessedCard: DeckSlotContent = null;
+    let firstGuessedPosition: number;
+    do  {
+      firstGuessedPosition = await player.getFirstGuessPosition();
+      firstGuessedCard = this.deck[firstGuessedPosition];
+    } while (firstGuessedCard === null);
+    
+    flipCardFaceUp(firstGuessedCard);
+    return {
+      card: firstGuessedCard,
+      position: firstGuessedPosition,
+    };
+  }
+
+  private async getPlayerSecondGuessResult(player: MemoryGamePlayer, firstGuessedPosition: number): Promise<MemoryGameGuessResult> {
+    let secondGuessedCard: DeckSlotContent = null;
+    let secondGuessedPosition: number;
+    do  {
+      secondGuessedPosition = await player.getSecondGuessPosition(firstGuessedPosition);
+      secondGuessedCard = this.deck[secondGuessedPosition];
+      if (secondGuessedCard === null) {
+        console.warn(`player guessed null deck position`, { player, firstGuessedPosition, secondGuessedPosition });
+      }
+    } while (secondGuessedCard === null);
+
+    flipCardFaceUp(secondGuessedCard);
+    return {
+      card: secondGuessedCard,
+      position: secondGuessedPosition,
+    };
+  }
+
+  public handlePairMatched(cardFromPair: Card, turnPlayer: MemoryGamePlayer): void {
     const matchingCards = this.deck.filter(isNotNull).filter((card) => card.imageUrl === cardFromPair.imageUrl);
-    const matchingCardsPositions = matchingCards.map((card) => this.deck.indexOf(card));
-
-    matchingCardsPositions.forEach((matchingCardPosition) => {
-      this.memoryGameAi!.rememberPosition(matchingCardPosition, null);
+    const matchingCardsPositions = matchingCards.map((matchingCard) => this.deck.indexOf(matchingCard));
+    
+    this.deck = removeCardsFromDeck(this.deck, matchingCards);
+    this.players.forEach((player) => {
+      player.rememberContentAtPosition(null, matchingCardsPositions[0]);
+      player.rememberContentAtPosition(null, matchingCardsPositions[1]);
     });
-
-    this.deck = this.removeCardsFromDeck(this.deck, matchingCards);
-    cardFromPair.shownFace = CardFace.FRONT;
-
-    if (this.memoryGameState === MemoryGamePhase.AI_TURN) {
-      this.aiHand.push(cardFromPair);
-    } else {
-      this.playerHand.push(cardFromPair);
-    }
+    flipCardFaceUp(cardFromPair);
+    turnPlayer.hand.push(cardFromPair);
   }
 
   async getNewCards(): Promise<Card[]> {
@@ -96,70 +110,5 @@ export class MemoryGameComponent implements OnInit {
     const pairedCards = uniqueCards.concat(uniqueCardDupes);
 
     return shuffleArray(pairedCards);
-  }
-
-  public handlePlayerSelectedCard(selectedCard: Card): void {
-    if (selectedCard.shownFace === CardFace.FRONT) {
-      return;
-    }
-
-    switch (this.memoryGameState) {
-      case MemoryGamePhase.PLAYER_TURN_NO_CARDS_REVEALED: {
-        this.handlePlayerNoCardsRevealedState(selectedCard);
-        break;
-      }
-      case MemoryGamePhase.PLAYER_TURN_FIRST_CARD_REVEALED: {
-        this.handlePlayerFirstCardRevealedState(selectedCard);
-        break;
-      }
-      case MemoryGamePhase.PLAYER_TURN_SECOND_CARD_REVEALED: {
-        // Do nothing
-        break;
-      }
-      case MemoryGamePhase.AI_TURN: {
-        // Do nothing
-        break;
-      }
-    }
-  }
-
-  private handlePlayerNoCardsRevealedState(clickedCard: Card): void {
-    flipCardFaceUp(clickedCard);
-    const clickedCardPosition = this.deck.indexOf(clickedCard);
-    this.memoryGameAi?.rememberPosition(clickedCardPosition, clickedCard);
-    this.memoryGameState = MemoryGamePhase.PLAYER_TURN_FIRST_CARD_REVEALED;
-  }
-
-  private async handlePlayerFirstCardRevealedState(clickedCard: Card): Promise<void> {
-    flipCardFaceUp(clickedCard);
-    const clickedCardPosition = this.deck.indexOf(clickedCard);
-    this.memoryGameAi?.rememberPosition(clickedCardPosition, clickedCard);
-    this.memoryGameState = MemoryGamePhase.PLAYER_TURN_SECOND_CARD_REVEALED;
-
-    const faceUpCards = getFaceUpCardsFromDeck(this.deck);
-    const isPair = faceUpCards.every((card) => card.imageUrl === faceUpCards[0].imageUrl);
-    
-    await wait(PLAYER_TURN_END_DELAY);
-
-    if (isPair) { // Remove matched cards from the deck
-      this.handlePairMatched(faceUpCards[0]);
-    } else { // Flip the cards back down
-      faceUpCards.forEach(flipCardFaceDown);
-    }
-    this.memoryGameState = MemoryGamePhase.AI_TURN;
-    this.conductAiTurn().then(() => {
-      this.memoryGameState = MemoryGamePhase.PLAYER_TURN_NO_CARDS_REVEALED;
-    });
-  }
-
-  private removeCardsFromDeck(deck: Deck, cards: Card[]): Deck {
-    deck = deck.slice();
-    cards.forEach((card) => {
-      const cardIndex = deck.indexOf(card);
-      if (cardIndex !== -1) {
-        deck[cardIndex] = null;
-      }
-    });
-    return deck;
   }
 }
