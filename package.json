@@ -4,10 +4,14 @@
   "scripts": {
     "ng": "ng",
     "start": "node ./dist/server/index.js",
-    "build": "npm run build:client && npm run build:common && npm run build:server",
-    "build:client": "rimraf ./dist/client/* && ng build",
-    "build:common": "rimraf ./dist/common/* && ttsc --p ./tsconfig.common.json",
-    "build:server": "rimraf ./dist/server/* && ttsc --p ./tsconfig.server.json",
+    "build": "npm run build-client && npm run build-common && npm run build-server",
+    "build:prod": "npm run build-client:prod && npm run build-common && npm run build-server",
+    "build-client": "rimraf ./dist/client/* && ng build",
+    "build-client:prod": "rimraf ./dist/client/* && ng build --prod",
+    "build-common": "rimraf ./dist/common/* && ttsc --p ./tsconfig.common.json",
+    "build-server": "rimraf ./dist/server/* && ttsc --p ./tsconfig.server.json",
+    "package": "rimraf ./release/* && pkg . --options max_old_space_size=4096 --output ./release/mmb-debug.exe && create-nodew-exe ./release/mmb-debug.exe ./release/mmb.exe",
+    "release": "npm run build:prod && npm run package",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --watch=false"
   },
@@ -43,6 +47,7 @@
     "@types/express": "^4.17.13",
     "@types/jasmine": "~3.6.0",
     "@types/set-cookie-parser": "^2.4.2",
+    "create-nodew-exe": "^1.0.10",
     "jasmine-core": "~3.7.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",
@@ -50,9 +55,15 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "ng-mocks": "^13.1.1",
+    "pkg": "^5.5.2",
     "rimraf": "^3.0.2",
     "ttypescript": "^1.5.13",
     "typescript": "^4.3.5",
     "typescript-transform-paths": "^3.3.1"
-  }
+  },
+  "pkg": {
+    "assets": [ "./dist/**/*" ],
+    "targets": [ "node14-win-x64" ]
+  },
+  "bin": "./dist/server/index.js"
 }
