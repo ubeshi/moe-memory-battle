@@ -5,6 +5,25 @@
   <memory-game-board #gameBoard
     [deck]="deck"
   ></memory-game-board>
+  <div *ngIf="isGameOver" class="d-flex flex-column justify-content-center align-items-center">
+    <div class="h2">
+      <span>
+        You {{
+          (players[0]?.hand?.length ?? 0) === (players[1]?.hand?.length ?? 0) ?
+            "are equally matched!" :
+          (players[0]?.hand?.length ?? 0) > (players[1]?.hand?.length ?? 0) ?
+            "won!" :
+            "got 2nd place!"
+        }}
+      </span>
+    </div>
+    <div class="row">
+      <div class="col-12">Your score: {{ players[0]?.hand?.length }}</div>
+      <div class="col-12">Opponent score: {{ players[1]?.hand?.length }}</div>
+      <button class="col-6" mat-raised-button (click)="startNewGame()">Play Again</button>
+      <button class="col-6" mat-raised-button (click)="handleReturnToMainMenuClicked()">Return to Main Menu</button>
+    </div>
+  </div>
 </div>
 <memory-game-hand
   [cards]="players[0]?.hand ?? []"

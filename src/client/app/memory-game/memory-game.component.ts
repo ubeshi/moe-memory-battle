@@ -1,12 +1,15 @@
 import { AfterViewInit, Component, ViewChild } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { AiDifficulty } from "@common/typings/ai";
 import { Card, CardFace, Deck, DeckSlotContent } from "@common/typings/card";
 import { MemoryGameGuessResult, MemoryGamePlayer } from "@common/typings/player";
+import { MAIN_MENU_ROUTER_PATH } from "../main-menu/main-menu-routing-constants";
 import { WaifuApiService } from "../services/waifu-api/waifu-api.service";
 import { MemoryGameAiPlayer } from "./memory-game-ai-player/memory-game-ai-player";
 import { shuffleArray } from "./memory-game-ai-player/memory-game-ai-player.utils";
 import { MemoryGameBoardComponent } from "./memory-game-board/memory-game-board.component";
 import { MemoryGameHumanPlayer } from "./memory-game-human-player/memory-game-human-player";
+import { DIFFICULTY_ROUTE_PARAM, MemoryGameActivatedRouteParams } from "./memory-game-routing-constants";
 import { flipCardFaceDown, flipCardFaceUp, isDeckEmpty, isNotNull, removeCardsFromDeck, wait } from "./memory-game.utils";
 
 const TURN_END_DELAY = 1000;
@@ -19,18 +22,32 @@ const TURN_END_DELAY = 1000;
 export class MemoryGameComponent implements AfterViewInit {
   public deck: Deck = [];
   public players: MemoryGamePlayer[] = [];
+  public isGameOver = false;
 
   @ViewChild("gameBoard") memoryGameBoard: MemoryGameBoardComponent | undefined;
 
-  constructor(private waifuApiService: WaifuApiService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private waifuApiService: WaifuApiService,
+  ) { }
 
-  async ngAfterViewInit(): Promise<void> {
+  ngAfterViewInit(): void {
+    this.startNewGame();
+  }
+
+  async startNewGame(): Promise<void> {
+    this.isGameOver = false;
+    const params = this.route.snapshot.params as MemoryGameActivatedRouteParams;
+
     this.deck = await this.getNewCards();
     this.players = [
       new MemoryGameHumanPlayer(this.memoryGameBoard!),
-      new MemoryGameAiPlayer(this.deck.slice(), AiDifficulty.EASY),
+      new MemoryGameAiPlayer(this.deck.slice(), params[DIFFICULTY_ROUTE_PARAM]),
     ];
-    this.playGame();
+    this.playGame().then(() => {
+      this.isGameOver = true;
+    });
   }
 
   private async playGame(): Promise<void> {
@@ -50,6 +67,10 @@ export class MemoryGameComponent implements AfterViewInit {
         } else {
           flipCardFaceDown(firstGuessedCard);
           flipCardFaceDown(secondGuessedCard);
+        }
+
+        if (isDeckEmpty(this.deck)) {
+          return; // end game
         }
       }
     }
@@ -110,5 +131,9 @@ export class MemoryGameComponent implements AfterViewInit {
     const pairedCards = uniqueCards.concat(uniqueCardDupes);
 
     return shuffleArray(pairedCards);
+  }
+
+  handleReturnToMainMenuClicked(): void {
+    this.router.navigate([MAIN_MENU_ROUTER_PATH]);
   }
 }

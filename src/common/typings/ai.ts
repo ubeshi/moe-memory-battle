@@ -1,6 +1,6 @@
 export const enum AiDifficulty {
-  EASY,
-  MEDIUM,
-  HARD,
-  PERFECT,
+  EASY = "easy",
+  MEDIUM = "medium",
+  HARD = "hard",
+  PERFECT = "perfect",
 }
