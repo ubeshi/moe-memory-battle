@@ -1,30 +1,33 @@
-<memory-game-hand
-  [cards]="players[1]?.hand ?? []"
-></memory-game-hand>
-<div class="container">
-  <memory-game-board #gameBoard
-    [deck]="deck"
-  ></memory-game-board>
-  <div *ngIf="isGameOver" class="d-flex flex-column justify-content-center align-items-center">
+<div class="d-flex flex-column justify-content-between game-board">
+  <memory-game-hand class="opponent-hand" [cards]="players[1].hand"></memory-game-hand>
+  <div class="container position-relative">
+    <memory-game-board #gameBoard
+      [deck]="deck"
+    ></memory-game-board>
+    <ng-container *ngIf="isGameOver">
+      <ng-container *ngTemplateOutlet="gameSummaryScreen"></ng-container>
+    </ng-container>
+  </div>
+  <memory-game-hand class="player-hand" [cards]="players[0].hand"></memory-game-hand>
+</div>
+
+<ng-template #gameSummaryScreen>
+  <div class="w-25 p-3 rounded border shadow text-center d-flex flex-column justify-content-center align-items-center bg-white game-summary">
     <div class="h2">
       <span>
         You {{
-          (players[0]?.hand?.length ?? 0) === (players[1]?.hand?.length ?? 0) ?
+          players[0].hand.length === players[1].hand.length ?
             "are equally matched!" :
-          (players[0]?.hand?.length ?? 0) > (players[1]?.hand?.length ?? 0) ?
+          players[0].hand.length > players[1].hand.length ?
             "won!" :
             "got 2nd place!"
         }}
       </span>
     </div>
-    <div class="row">
-      <div class="col-12">Your score: {{ players[0]?.hand?.length }}</div>
-      <div class="col-12">Opponent score: {{ players[1]?.hand?.length }}</div>
-      <button class="col-6" mat-raised-button (click)="startNewGame()">Play Again</button>
-      <button class="col-6" mat-raised-button (click)="handleReturnToMainMenuClicked()">Return to Main Menu</button>
+    <div class="h3">{{ players[0].hand.length }} to {{ players[1].hand.length }}</div>
+    <div class="d-grid gap-1">
+      <button mat-raised-button (click)="startNewGame()">Play Again</button>
+      <button mat-raised-button (click)="handleReturnToMainMenuClicked()">Return to Main Menu</button>
     </div>
   </div>
-</div>
-<memory-game-hand
-  [cards]="players[0]?.hand ?? []"
-></memory-game-hand>
+</ng-template>

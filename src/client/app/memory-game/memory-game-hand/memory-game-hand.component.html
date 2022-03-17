@@ -1,6 +1,10 @@
-<div class="d-flex">
-  <memory-game-card *ngFor="let card of cards"
-    [frontImage]="card.imageUrl"
-    [shownFace]="card.shownFace"
-  ></memory-game-card>
+<div class="card-hand-container">
+  <div class="d-flex justify-content-center align-items-center card-hand">
+    <div *ngFor="let card of cards" class="card-slot">
+      <memory-game-card
+        [frontImage]="card.imageUrl"
+        [shownFace]="card.shownFace"
+      ></memory-game-card>
+    </div>
+  </div>
 </div>

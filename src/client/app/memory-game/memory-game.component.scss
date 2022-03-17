@@ -1,0 +1,20 @@
+.game-summary {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(2);
+  zoom: 0.5;
+}
+
+.opponent-hand {
+  background-color: pink;
+}
+
+.player-hand {
+  background-color: lightblue;
+}
+
+.game-board {
+  min-height: 100%;
+  background-color: lightyellow;
+}

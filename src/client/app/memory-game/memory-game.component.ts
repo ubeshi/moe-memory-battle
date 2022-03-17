@@ -13,15 +13,18 @@ import { DIFFICULTY_ROUTE_PARAM, MemoryGameActivatedRouteParams } from "./memory
 import { flipCardFaceDown, flipCardFaceUp, isDeckEmpty, isNotNull, removeCardsFromDeck, wait } from "./memory-game.utils";
 
 const TURN_END_DELAY = 1000;
+const DECK_SIZE = 32;
 
 @Component({
   selector: "memory-game",
   templateUrl: "./memory-game.component.html",
-  // styleUrls: ["./memory-game.component.scss"],
+  styleUrls: ["./memory-game.component.scss"],
 })
 export class MemoryGameComponent implements AfterViewInit {
-  public deck: Deck = [];
-  public players: MemoryGamePlayer[] = [];
+  public deck: Deck = this.getStubDeck(DECK_SIZE);
+  public players: [MemoryGamePlayer, MemoryGamePlayer] = [
+    this.getStubPlayer(), this.getStubPlayer()
+  ];
   public isGameOver = false;
 
   @ViewChild("gameBoard") memoryGameBoard: MemoryGameBoardComponent | undefined;
@@ -135,5 +138,26 @@ export class MemoryGameComponent implements AfterViewInit {
 
   handleReturnToMainMenuClicked(): void {
     this.router.navigate([MAIN_MENU_ROUTER_PATH]);
+  }
+
+  getStubDeck(deckSize: number): Deck {
+    const stubCard = { shownFace: CardFace.BACK };
+    return Array(deckSize).fill(stubCard);
+  }
+
+  getStubPlayer(): MemoryGamePlayer {
+    const stubPlayer: MemoryGamePlayer = {
+      hand: [],
+      getFirstGuessPosition: function (): Promise<number> {
+        throw new Error("Function not implemented.");
+      },
+      getSecondGuessPosition: function (_firstGuessedPosition: number): Promise<number> {
+        throw new Error("Function not implemented.");
+      },
+      rememberContentAtPosition: function (_content: DeckSlotContent, _position: number): void {
+        throw new Error("Function not implemented.");
+      }
+    };
+    return stubPlayer;
   }
 }

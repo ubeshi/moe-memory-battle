@@ -1,0 +1,25 @@
+$hand-container-height-scale: 12.5%;
+
+.card-hand-container {
+  padding-top: $hand-container-height-scale;
+  position: relative;
+}
+
+.card-hand {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+
+.card-slot {
+  max-width: $hand-container-height-scale;
+  transform: scale(0.9);
+  transition: all 0.2s;
+
+  &:hover {
+    transform: scale(0.95);
+  }
+}
