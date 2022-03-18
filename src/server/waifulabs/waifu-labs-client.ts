@@ -5,7 +5,7 @@ import {
   GenerateWaifuStep,
   WaifuLabsSocketEvent,
   WaifuLabsSocketScope,
-  WaifuSeedable
+  WaifuSeedable,
 } from "./waifulabs";
 import { Waifu } from "@common/typings/waifu";
 
@@ -33,7 +33,7 @@ export class WaifuLabsClient {
     const response = await this.waifuLabsSocket.request<GenerateGridResponse>(
       WaifuLabsSocketEvent.GENERATE,
       { id: 1, params },
-      WaifuLabsSocketScope.API
+      WaifuLabsSocketScope.API,
     );
     return response.response.data.newGirls;
   }
@@ -43,7 +43,7 @@ export class WaifuLabsClient {
     const response = await this.waifuLabsSocket.request<GenerateBigResponse>(
       WaifuLabsSocketEvent.GENERATE_PORTRAIT,
       { params: { currentGirl, size } },
-      WaifuLabsSocketScope.API
+      WaifuLabsSocketScope.API,
     );
     return {
       image: response.response.data.girl,

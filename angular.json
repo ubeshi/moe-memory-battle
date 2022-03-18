@@ -15,7 +15,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "mmb",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -107,9 +107,21 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
   },
-  "defaultProject": "moe-memory-battle"
+  "defaultProject": "moe-memory-battle",
+  "cli": {
+    "defaultCollection": "@angular-eslint/schematics"
+  }
 }

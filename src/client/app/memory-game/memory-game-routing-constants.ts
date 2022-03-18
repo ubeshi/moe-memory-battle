@@ -5,4 +5,4 @@ export const DIFFICULTY_ROUTE_PARAM = "difficulty";
 
 export interface MemoryGameActivatedRouteParams {
   [DIFFICULTY_ROUTE_PARAM]: AiDifficulty;
-};
+}

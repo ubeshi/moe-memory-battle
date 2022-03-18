@@ -13,7 +13,7 @@ import { MemoryGameBoardComponent } from "./memory-game/memory-game-board/memory
 import { MemoryGameCardComponent } from "./memory-game/memory-game-card/memory-game-card.component";
 import { MemoryGameHandComponent } from "./memory-game/memory-game-hand/memory-game-hand.component";
 import { MemoryGameComponent } from "./memory-game/memory-game.component";
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [

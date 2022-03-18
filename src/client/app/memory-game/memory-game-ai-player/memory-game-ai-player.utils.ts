@@ -23,7 +23,7 @@ export function removePositionFromMemory(memory: Deck, position: number): Deck {
 
 export function getAnyPairPositionFromMemory(memory: Deck): [number, number] | null {
   const rememberedCards = getFaceUpCardsFromDeck(memory);
-  for (let rememberedCard of rememberedCards) {
+  for (const rememberedCard of rememberedCards) {
     const positions = getRememberedPositionsByImage(memory, rememberedCard.imageUrl);
     if (positions.length === 2) {
       return [positions[0], positions[1]];

@@ -4,7 +4,7 @@ import { AiDifficulty } from "@common/typings/ai";
 import { MEMORY_GAME_ROUTER_PATH } from "../memory-game/memory-game-routing-constants";
 
 @Component({
-  selector: "main-menu",
+  selector: "mmb-main-menu",
   templateUrl: "./main-menu.component.html",
 })
 export class MainMenuComponent {

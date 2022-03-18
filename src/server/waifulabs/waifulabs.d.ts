@@ -62,7 +62,7 @@ export const enum WaifuLabsSocketEvent {
   GENERATE_PORTRAIT = "generate_big",
 }
 
-export interface WaifuLabsSocketResponseData<T = Object> {
+export interface WaifuLabsSocketResponseData<T = Record<string, unknown>> {
   response: T;
   status: string;
 }

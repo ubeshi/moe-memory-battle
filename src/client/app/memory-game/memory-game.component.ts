@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ViewChildren } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AiDifficulty } from "@common/typings/ai";
 import { Card, CardFace, Deck, DeckSlotContent } from "@common/typings/card";
 import { MemoryGameGuessResult, MemoryGamePlayer } from "@common/typings/player";
 import { MAIN_MENU_ROUTER_PATH } from "../main-menu/main-menu-routing-constants";
@@ -16,18 +15,18 @@ const TURN_END_DELAY = 1000;
 const DECK_SIZE = 32;
 
 @Component({
-  selector: "memory-game",
+  selector: "mmb-memory-game",
   templateUrl: "./memory-game.component.html",
   styleUrls: ["./memory-game.component.scss"],
 })
 export class MemoryGameComponent implements AfterViewInit {
   public deck: Deck = this.getStubDeck(DECK_SIZE);
   public players: [MemoryGamePlayer, MemoryGamePlayer] = [
-    this.getStubPlayer(), this.getStubPlayer()
+    this.getStubPlayer(), this.getStubPlayer(),
   ];
   public isGameOver = false;
 
-  @ViewChild("gameBoard") memoryGameBoard: MemoryGameBoardComponent | undefined;
+  @ViewChildren("gameBoard") memoryGameBoard: MemoryGameBoardComponent | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,12 +39,17 @@ export class MemoryGameComponent implements AfterViewInit {
   }
 
   async startNewGame(): Promise<void> {
+    const memoryGameBoard = this.memoryGameBoard;
+    if (memoryGameBoard === undefined) {
+      throw new Error("Could not find the game board");
+    }
+
     this.isGameOver = false;
     const params = this.route.snapshot.params as MemoryGameActivatedRouteParams;
 
     this.deck = await this.getNewCards();
     this.players = [
-      new MemoryGameHumanPlayer(this.memoryGameBoard!),
+      new MemoryGameHumanPlayer(memoryGameBoard),
       new MemoryGameAiPlayer(this.deck.slice(), params[DIFFICULTY_ROUTE_PARAM]),
     ];
     this.playGame().then(() => {
@@ -55,7 +59,7 @@ export class MemoryGameComponent implements AfterViewInit {
 
   private async playGame(): Promise<void> {
     while (!isDeckEmpty(this.deck)) {
-      for (let player of this.players) {
+      for (const player of this.players) {
         const { card: firstGuessedCard, position: firstGuessedPosition } = await this.getPlayerFirstGuessResult(player);
         this.players.forEach((player) => player.rememberContentAtPosition(firstGuessedCard, firstGuessedPosition));
 
@@ -101,7 +105,7 @@ export class MemoryGameComponent implements AfterViewInit {
       secondGuessedPosition = await player.getSecondGuessPosition(firstGuessedPosition);
       secondGuessedCard = this.deck[secondGuessedPosition];
       if (secondGuessedCard === null) {
-        console.warn(`player guessed null deck position`, { player, firstGuessedPosition, secondGuessedPosition });
+        console.warn("player guessed null deck position", { player, firstGuessedPosition, secondGuessedPosition });
       }
     } while (secondGuessedCard === null);
 
@@ -156,7 +160,7 @@ export class MemoryGameComponent implements AfterViewInit {
       },
       rememberContentAtPosition: function (_content: DeckSlotContent, _position: number): void {
         throw new Error("Function not implemented.");
-      }
+      },
     };
     return stubPlayer;
   }

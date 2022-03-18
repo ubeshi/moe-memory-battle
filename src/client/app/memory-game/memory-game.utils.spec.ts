@@ -11,7 +11,7 @@ import {
   isDeckEmpty,
   isNotNull,
   removeCardsFromDeck,
-  wait
+  wait,
 } from "./memory-game.utils";
 
 describe("memory-game utils", () => {

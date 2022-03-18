@@ -1,10 +1,10 @@
 import { Component, Input } from "@angular/core";
-import { Card, Deck } from "@common/typings/card";
+import { Deck } from "@common/typings/card";
 import { MemoryGameController } from "@common/typings/player";
 import { Observable, Subject } from "rxjs";
 
 @Component({
-  selector: "memory-game-board",
+  selector: "mmb-memory-game-board",
   templateUrl: "./memory-game-board.component.html",
   styleUrls: ["./memory-game-board.component.scss"],
 })

@@ -3,7 +3,7 @@ import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { CardFace } from "@common/typings/card";
 
 @Component({
-  selector: "memory-game-card",
+  selector: "mmb-memory-game-card",
   templateUrl: "./memory-game-card.component.html",
   styleUrls: ["./memory-game-card.component.scss"],
 })

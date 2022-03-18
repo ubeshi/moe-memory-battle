@@ -7,7 +7,7 @@ import { Waifu } from "@common/typings/waifu";
 import { baseUrl } from "@client/app/config";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class WaifuApiService {
   constructor (

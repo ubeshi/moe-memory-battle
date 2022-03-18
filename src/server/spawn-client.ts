@@ -1,4 +1,3 @@
-// @ts-ignore ecmascript import warning
 import * as download from "download-chromium";
 import * as os from "os";
 import { execFile } from "child_process";

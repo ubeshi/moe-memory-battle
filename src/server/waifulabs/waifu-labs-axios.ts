@@ -8,7 +8,7 @@ declare module "axios" {
 }
 
 export class WaifuLabsAxios {
-  private static baseUrl = `https://waifulabs.com`;
+  private static baseUrl = "https://waifulabs.com";
 
   private static axiosInstance = axios.create({
     baseURL: WaifuLabsAxios.baseUrl,

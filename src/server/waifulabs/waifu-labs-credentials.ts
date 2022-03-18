@@ -37,7 +37,7 @@ export class WaifuLabsCredentials {
 
   private static parseAuthToken(html: string): string | undefined {
     if (WAIFU_LABS_ACCESS_TOKEN_REGEX.test(html) === true) {
-      const matchGroups = WAIFU_LABS_ACCESS_TOKEN_REGEX.exec(html)!.groups;
+      const matchGroups = WAIFU_LABS_ACCESS_TOKEN_REGEX.exec(html)?.groups;
       return matchGroups?.authToken;
     } else {
       return undefined;
@@ -46,7 +46,7 @@ export class WaifuLabsCredentials {
 
   private static parseCsrfToken(html: string): string | undefined {
     if (WAIFU_LABS_CSRF_TOKEN_REGEX.test(html) === true) {
-      const matchGroups = WAIFU_LABS_CSRF_TOKEN_REGEX.exec(html)!.groups;
+      const matchGroups = WAIFU_LABS_CSRF_TOKEN_REGEX.exec(html)?.groups;
       return matchGroups?.csrfToken;
     } else {
       return undefined;

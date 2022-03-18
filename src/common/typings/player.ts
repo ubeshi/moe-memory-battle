@@ -15,4 +15,4 @@ export interface MemoryGameController {
 export interface MemoryGameGuessResult {
   card: Card,
   position: number,
-};
+}

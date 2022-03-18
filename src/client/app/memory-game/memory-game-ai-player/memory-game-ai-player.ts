@@ -15,7 +15,7 @@ const AI_THINKING_DELAY = 1000;
 
 export class MemoryGameAiPlayer implements MemoryGamePlayer {
   private rememberedDeck: Deck = [];  
-  private turnNumber: number = 0;
+  private turnNumber = 0;
   private difficulty = AiDifficulty.PERFECT;
 
   public hand: Card[] = [];

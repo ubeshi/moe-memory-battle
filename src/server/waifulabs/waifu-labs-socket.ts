@@ -61,7 +61,7 @@ export class WaifuLabsSocket {
     });
   }
 
-  public async request<T>(eventType: WaifuLabsSocketEvent, requestData: Object, scope: WaifuLabsSocketScope): Promise<WaifuLabsSocketResponseData<T>> {
+  public async request<T>(eventType: WaifuLabsSocketEvent, requestData: Record<string, unknown>, scope: WaifuLabsSocketScope): Promise<WaifuLabsSocketResponseData<T>> {
     const { webSocket, connectionNumber } = this.webSocketMetadata;
     const readyState = webSocket.readyState;
     const transactionId = WaifuLabsSocket.getNewTransactionNumber().toString();

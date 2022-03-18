@@ -1,14 +1,14 @@
 <div class="d-flex flex-column justify-content-between game-board">
-  <memory-game-hand class="opponent-hand" [cards]="players[1].hand"></memory-game-hand>
+  <mmb-memory-game-hand class="opponent-hand" [cards]="players[1].hand"></mmb-memory-game-hand>
   <div class="container position-relative">
-    <memory-game-board #gameBoard
+    <mmb-memory-game-board #gameBoard
       [deck]="deck"
-    ></memory-game-board>
+    ></mmb-memory-game-board>
     <ng-container *ngIf="isGameOver">
       <ng-container *ngTemplateOutlet="gameSummaryScreen"></ng-container>
     </ng-container>
   </div>
-  <memory-game-hand class="player-hand" [cards]="players[0].hand"></memory-game-hand>
+  <mmb-memory-game-hand class="player-hand" [cards]="players[0].hand"></mmb-memory-game-hand>
 </div>
 
 <ng-template #gameSummaryScreen>
