@@ -1,10 +1,10 @@
-import * as download from "download-chromium";
 import * as os from "os";
 import { execFile } from "child_process";
+import { downloadChromium } from "./download-chromium";
 
 export function spawnClient(port: number): void {
-  download({
-    revision: "662092",
+  downloadChromium({
+    revision: 662092,
     installPath: os.tmpdir(),
   }).then((installedPath: string) => {
     const clientProcess = execFile(installedPath, [ `--app=http://localhost:${port}` ], (error) => {
