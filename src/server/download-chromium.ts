@@ -43,7 +43,7 @@ const downloadURLs = {
  */
 export async function downloadChromium({
   platform: platform = getCurrentPlatform(),
-  revision: revision = 499413,
+  revision: revision = "499413",
   log: log = false,
   installPath: installPath = `${__dirname}/.local-chromium`,
 } = {}) {
@@ -111,7 +111,7 @@ function get(url: string): Stream {
   return got.stream(url, { agent: agents });
 }
 
-function archiveName(platform: Platform, revision: number): string | null {
+function archiveName(platform: Platform, revision: string): string | null {
   switch (platform) {
   case Platform.LINUX:
     return "chrome-linux";
@@ -119,13 +119,13 @@ function archiveName(platform: Platform, revision: number): string | null {
     return "chrome-mac";
   case Platform.WIN_32:
   case Platform.WIN_64:
-    return revision > revisionChange ? "chrome-win" : "chrome-win32";
+    return parseInt(revision, 10) > revisionChange ? "chrome-win" : "chrome-win32";
   default:
     return null;
   }
 }
 
-function downloadUrl(platform: Platform, revision: number): string {
+function downloadUrl(platform: Platform, revision: string): string {
   return format(
     downloadURLs[platform],
     revision,
@@ -151,11 +151,11 @@ function getCurrentPlatform(): Platform {
   throw new Error(`Current system platform not supported: ${currentOsPlatform}`);
 }
 
-function getFolderPath(root: string, platform: Platform, revision: number) {
+function getFolderPath(root: string, platform: Platform, revision: string) {
   return  `${root}/chromium-${platform}-${revision}`;
 }
 
-function getExecutablePath(root: string, platform: Platform, revision: number) {
+function getExecutablePath(root: string, platform: Platform, revision: string) {
   const folder = getFolderPath(root, platform, revision);
   const archiveFolder = archiveName(platform, revision);
 
@@ -169,7 +169,7 @@ function getExecutablePath(root: string, platform: Platform, revision: number) {
   return `${folder}/${archiveFolder}/chrome.exe`;
 }
 
-async function copyCacheToModule(platform: Platform, revision: number, installPath: string) {
+async function copyCacheToModule(platform: Platform, revision: string, installPath: string) {
   const cacheRoot = `${os.homedir()}/.chromium-cache`;
   const osCachePath = getFolderPath(cacheRoot, platform, revision);
   const osInstallPath = getFolderPath(installPath, platform, revision);
