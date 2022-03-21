@@ -2,8 +2,7 @@
   <div class="card-slot" *ngFor="let card of deck; index as position">
     <mmb-memory-game-card *ngIf="card !== null"
       class="card"
-      [frontImage]="card.imageUrl"
-      [shownFace]="card.shownFace"
+      [card]="card"
       (click)="handlePositionClicked(position)"
     ></mmb-memory-game-card>
   </div>

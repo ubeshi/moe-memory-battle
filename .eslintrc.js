@@ -2,63 +2,66 @@ module.exports = {
   "env": {
     "browser": true,
     "es2021": true,
-    "node": true
+    "node": true,
   },
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
-    "sourceType": "module"
+    "sourceType": "module",
   },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
   ],
   "rules": {
     "indent": [
       "error",
-      2
+      2,
+      {
+        "SwitchCase": 1,
+      },
     ],
     "linebreak-style": [
       "error",
-      "windows"
+      "windows",
     ],
     "quotes": [
       "error",
-      "double"
+      "double",
     ],
     "semi": [
       "error",
-      "always"
+      "always",
     ],
     "comma-dangle": [
       "error",
-      "always-multiline"
+      "always-multiline",
     ],
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
         "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_"
+        "varsIgnorePattern": "^_",
       },
-    ]
+    ],
   },
   "overrides": [
     {
       "files": [
-        "src/client/**/*.ts"
+        "src/client/**/*.ts",
       ],
       "parserOptions": {
         "project": [
-          "tsconfig.app.json"
+          "tsconfig.app.json",
         ],
-        "createDefaultProgram": true
+        "createDefaultProgram": true,
       },
       "extends": [
         "plugin:@angular-eslint/recommended",
-        "plugin:@angular-eslint/template/process-inline-templates"
+        "plugin:@angular-eslint/template/process-inline-templates",
       ],
       "rules": {
         "@angular-eslint/directive-selector": [
@@ -66,22 +69,18 @@ module.exports = {
           {
             "type": "attribute",
             "prefix": "mmb",
-            "style": "camelCase"
-          }
+            "style": "camelCase",
+          },
         ],
         "@angular-eslint/component-selector": [
           "error",
           {
             "type": "element",
             "prefix": "mmb",
-            "style": "kebab-case"
-          }
+            "style": "kebab-case",
+          },
         ],
-        "indent": [
-          "error",
-          2
-        ]
-      }
+      },
     },
     // {
     //   "files": [
@@ -92,5 +91,5 @@ module.exports = {
     //   ],
     //   "rules": {}
     // }
-  ]
+  ],
 };

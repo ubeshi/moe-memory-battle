@@ -8,7 +8,10 @@
       <ng-container *ngTemplateOutlet="gameSummaryScreen"></ng-container>
     </ng-container>
   </div>
-  <mmb-memory-game-hand class="player-hand" [cards]="players[0].hand"></mmb-memory-game-hand>
+  <mmb-memory-game-hand #playerHand
+    class="player-hand"
+    [cards]="players[0].hand"
+  ></mmb-memory-game-hand>
 </div>
 
 <ng-template #gameSummaryScreen>

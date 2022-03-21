@@ -1,15 +1,18 @@
 <div class="w-100 h-100 rounded border border-dark shadow-sm" role="button">
-  <ng-container *ngIf="shownFace === CardFace.FRONT">
+  <ng-container *ngIf="_card?.shownFace === CardFace.FRONT">
     <ng-container *ngTemplateOutlet="cardFront"></ng-container>
   </ng-container>
   
-  <ng-container *ngIf="shownFace === CardFace.BACK">
+  <ng-container *ngIf="_card?.shownFace === CardFace.BACK">
     <ng-container *ngTemplateOutlet="cardBack"></ng-container>
   </ng-container>
 </div>
 
 <ng-template #cardFront>
-  <img *ngIf="_frontImage" class="img-fluid rounded" [src]="_frontImage"/>
+  <div *ngIf="_frontImage" class="rounded">
+    <img class="img-fluid" [src]="_frontImage"/>
+    <span [ngClass]="[effectIcon, 'icon']"></span>
+  </div>
   <span *ngIf="!_frontImage">Front</span>
 </ng-template>
 

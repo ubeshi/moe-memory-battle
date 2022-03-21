@@ -30,7 +30,7 @@ export class MemoryGameAiPlayer implements MemoryGamePlayer {
   }
 
   public async getFirstGuessPosition(): Promise<number> {
-    this.rememberedDeck = this.getPersistingMemory(this.rememberedDeck);
+    this.rememberedDeck = this.getMemoryAfterForgetting(this.rememberedDeck);
     await wait(AI_THINKING_DELAY);
     return Promise.resolve(getFirstGuessPosition(this.rememberedDeck));
   }
@@ -41,7 +41,11 @@ export class MemoryGameAiPlayer implements MemoryGamePlayer {
     return Promise.resolve(getSecondGuessPosition(this.rememberedDeck, firstGuessedPosition));
   }
 
-  private getPersistingMemory(memory: Deck): Deck {
+  public async getPlayedCardFromHandPosition():Promise<number> {
+    return Promise.reject(); // Not implemented
+  }
+
+  private getMemoryAfterForgetting(memory: Deck): Deck {
     const numberOfCardsToForget = getNumberOfCardsToForget(this.difficulty, this.turnNumber);
     for (let i = 0; i < numberOfCardsToForget; i++) {
       const rememberedPosition = getAnyRememberedPositionFromMemory(memory);

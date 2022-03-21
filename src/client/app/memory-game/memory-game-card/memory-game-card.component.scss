@@ -3,3 +3,21 @@ img {
   height: 100%;
   object-fit: cover;
 }
+
+.icon {
+  font-size: 30px;
+  width: 30px;
+  height: 30px;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  background-color: gray;
+  color: white;
+  text-align: center;
+
+  border-bottom-left-radius: 50%;
+  padding-bottom: 1px;
+  padding-left: 1px;
+}

@@ -1,9 +1,9 @@
 <div class="card-hand-container">
   <div class="d-flex justify-content-center align-items-center card-hand">
-    <div *ngFor="let card of cards" class="card-slot">
+    <div *ngFor="let card of cards; index as position" class="card-slot">
       <mmb-memory-game-card
-        [frontImage]="card.imageUrl"
-        [shownFace]="card.shownFace"
+        [card]="card"
+        (click)="handlePositionClicked(position)"
       ></mmb-memory-game-card>
     </div>
   </div>

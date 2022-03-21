@@ -41,6 +41,7 @@ export function getCardCopy(card: Card): Card {
   return {
     imageUrl: card.imageUrl,
     shownFace: card.shownFace,
+    effect: card.effect,
   };
 }
 
@@ -55,6 +56,10 @@ export function removeCardsFromDeck(deck: Deck, cards: Card[]): Deck {
   return deck;
 }
 
+export function removeCardsFromHand(hand: Card[], cards: Card[]): Card[] {
+  return hand.filter((cardInHand) => !cards.includes(cardInHand));
+}
+
 export function isDeckEmpty(deck: Deck): boolean {
   return deck.every((deckSlot) => deckSlot === null);
 }
@@ -66,4 +71,3 @@ export function flipCardFaceUp(card: Card): void {
 export function flipCardFaceDown(card: Card): void {
   card.shownFace = CardFace.BACK;
 }
-

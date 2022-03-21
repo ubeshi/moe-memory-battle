@@ -6,6 +6,7 @@ export interface MemoryGamePlayer {
   getFirstGuessPosition: () => Promise<number>;
   getSecondGuessPosition: (firstGuessedPosition: number) => Promise<number>;
   rememberContentAtPosition: (content: DeckSlotContent, position: number) => void;
+  getPlayedCardFromHandPosition: () => Promise<number>;
 }
 
 export interface MemoryGameController {
@@ -15,4 +16,9 @@ export interface MemoryGameController {
 export interface MemoryGameGuessResult {
   card: Card,
   position: number,
+}
+
+export const enum GameAction {
+  GUESS_CARD,
+  PLAY_CARD,
 }
