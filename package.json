@@ -38,8 +38,6 @@
     "ionicons": "^4.6.3",
     "mkdirp": "^1.0.4",
     "promisepipe": "^3.0.0",
-    "proxy-agent": "^4.0.1",
-    "proxy-from-env": "^1.1.0",
     "rxjs": "~6.6.0",
     "set-cookie-parser": "^2.4.8",
     "tslib": "^2.2.0",

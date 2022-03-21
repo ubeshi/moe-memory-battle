@@ -2,14 +2,11 @@ import * as os from "os";
 import { format } from "util";
 import * as fs from "fs";
 import { promises as fsPromises } from "fs";
-import * as assert from "assert";
 import got from "got";
 import * as pipe from "promisepipe";
 import * as extract from "extract-zip";
 import * as cpr from "cpr";
 import * as mkdirp from "mkdirp";
-import { getProxyForUrl } from "proxy-from-env";
-import ProxyAgent from "proxy-agent";
 import { Stream } from "stream";
 
 // Windows archive name changed at r591479.
@@ -70,7 +67,6 @@ export async function downloadChromium({
   }
 
   const url = downloadUrl(platform, revision);
-  assert(downloadURLs[platform], `Unsupported platform: ${platform}`);
 
   try {
     await fsPromises.mkdir(cacheRoot);
@@ -102,13 +98,7 @@ export async function downloadChromium({
 }
 
 function get(url: string): Stream {
-  const proxy = getProxyForUrl(url);
-  const agent = proxy ? new ProxyAgent(proxy) : undefined;
-  const agents = {
-    http: agent,
-    https: agent,
-  };
-  return got.stream(url, { agent: agents });
+  return got.stream(url);
 }
 
 function archiveName(platform: Platform, revision: string): string | null {
