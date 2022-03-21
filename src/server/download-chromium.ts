@@ -113,15 +113,15 @@ function get(url: string): Stream {
 
 function archiveName(platform: Platform, revision: string): string | null {
   switch (platform) {
-  case Platform.LINUX:
-    return "chrome-linux";
-  case Platform.MAC:
-    return "chrome-mac";
-  case Platform.WIN_32:
-  case Platform.WIN_64:
-    return parseInt(revision, 10) > revisionChange ? "chrome-win" : "chrome-win32";
-  default:
-    return null;
+    case Platform.LINUX:
+      return "chrome-linux";
+    case Platform.MAC:
+      return "chrome-mac";
+    case Platform.WIN_32:
+    case Platform.WIN_64:
+      return parseInt(revision, 10) > revisionChange ? "chrome-win" : "chrome-win32";
+    default:
+      return null;
   }
 }
 
