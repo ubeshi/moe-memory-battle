@@ -35,6 +35,7 @@
     "express": "^4.17.3",
     "extract-zip": "^2.0.1",
     "got": "^11.8.3",
+    "ionicons": "^4.6.3",
     "mkdirp": "^1.0.4",
     "promisepipe": "^3.0.0",
     "proxy-agent": "^5.0.0",

@@ -1,5 +1,5 @@
 import { fakeAsync, flush, tick } from "@angular/core/testing";
-import { Card, CardFace, Deck } from "@common/typings/card";
+import { Card, CardEffect, CardFace, Deck } from "@common/typings/card";
 import {
   flipCardFaceDown,
   flipCardFaceUp,
@@ -187,7 +187,8 @@ describe("memory-game utils", () => {
       mockCard = {
         imageUrl: "foobar",
         shownFace: CardFace.FRONT,
-      } as Card;
+        effect: CardEffect.REVEAL,
+      };
     });
 
     it("should return a card with a different reference", () => {

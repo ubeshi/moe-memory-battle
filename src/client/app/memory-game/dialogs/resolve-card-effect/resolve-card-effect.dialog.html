@@ -1,0 +1,9 @@
+<div mat-dialog-title>Card Effect: {{ cardEffectName }}</div>
+<div>{{ cardEffectDescription }}</div>
+
+<ng-container [ngSwitch]="card.effect">
+  <mmb-reveal-effect-resolver *ngSwitchCase="CardEffect.REVEAL"
+    [deck]="deck"
+    (resolved)="this.dialogRef.close()"
+  ></mmb-reveal-effect-resolver>
+</ng-container>

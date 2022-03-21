@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { CardFace } from "@common/typings/card";
+import { Card, CardFace } from "@common/typings/card";
+import { getCardEffectIcon } from "../card-effects/card-effect-icons";
 
 @Component({
   selector: "mmb-memory-game-card",
@@ -8,17 +9,17 @@ import { CardFace } from "@common/typings/card";
   styleUrls: ["./memory-game-card.component.scss"],
 })
 export class MemoryGameCardComponent {
-  @Input() set frontImage(imageUrl: string) {
-    this._frontImage = this.domSanitizer.bypassSecurityTrustResourceUrl(imageUrl);
+  public _card: Card | undefined;
+  @Input() set card(card: Card) {
+    this._card = card;
+    this.effectIcon = `ion ion-md-${getCardEffectIcon(card.effect)}`;
+    this._frontImage = this.domSanitizer.bypassSecurityTrustResourceUrl(card.imageUrl);
   }
-  @Input() set backImage(imageUrl: string) {
-    this._backImage = this.domSanitizer.bypassSecurityTrustResourceUrl(imageUrl);
-  }
-  @Input() shownFace: CardFace = CardFace.BACK;
 
   public CardFace = CardFace;
   public _frontImage: SafeUrl | undefined;
   public _backImage: SafeUrl | undefined;
+  public effectIcon = "";
 
   constructor(private domSanitizer: DomSanitizer) { }
 }

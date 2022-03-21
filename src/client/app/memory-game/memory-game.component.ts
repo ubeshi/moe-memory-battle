@@ -1,15 +1,18 @@
-import { AfterViewInit, Component, ViewChildren } from "@angular/core";
+import { AfterViewInit, Component, ViewChild } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Card, CardFace, Deck, DeckSlotContent } from "@common/typings/card";
-import { MemoryGameGuessResult, MemoryGamePlayer } from "@common/typings/player";
+import { Card, CardEffect, CardFace, Deck, DeckSlotContent } from "@common/typings/card";
+import { GameAction, MemoryGameGuessResult, MemoryGamePlayer } from "@common/typings/player";
 import { MAIN_MENU_ROUTER_PATH } from "../main-menu/main-menu-routing-constants";
 import { WaifuApiService } from "../services/waifu-api/waifu-api.service";
+import { ResolveCardEffectDialogComponent } from "./dialogs/resolve-card-effect/resolve-card-effect.dialog";
 import { MemoryGameAiPlayer } from "./memory-game-ai-player/memory-game-ai-player";
 import { shuffleArray } from "./memory-game-ai-player/memory-game-ai-player.utils";
 import { MemoryGameBoardComponent } from "./memory-game-board/memory-game-board.component";
+import { MemoryGameHandComponent } from "./memory-game-hand/memory-game-hand.component";
 import { MemoryGameHumanPlayer } from "./memory-game-human-player/memory-game-human-player";
 import { DIFFICULTY_ROUTE_PARAM, MemoryGameActivatedRouteParams } from "./memory-game-routing-constants";
-import { flipCardFaceDown, flipCardFaceUp, isDeckEmpty, isNotNull, removeCardsFromDeck, wait } from "./memory-game.utils";
+import { flipCardFaceDown, flipCardFaceUp, isDeckEmpty, isNotNull, removeCardsFromDeck, removeCardsFromHand, wait } from "./memory-game.utils";
 
 const TURN_END_DELAY = 1000;
 const DECK_SIZE = 32;
@@ -26,16 +29,20 @@ export class MemoryGameComponent implements AfterViewInit {
   ];
   public isGameOver = false;
 
-  @ViewChildren("gameBoard") memoryGameBoard: MemoryGameBoardComponent | undefined;
+  @ViewChild("gameBoard") memoryGameBoard: MemoryGameBoardComponent | undefined;
+  @ViewChild("playerHand") playerHand: MemoryGameHandComponent | undefined;
 
   constructor(
+    private dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
     private waifuApiService: WaifuApiService,
   ) { }
 
   ngAfterViewInit(): void {
-    this.startNewGame();
+    this.startNewGame().catch((error) => {
+      console.error(error);
+    });
   }
 
   async startNewGame(): Promise<void> {
@@ -44,23 +51,30 @@ export class MemoryGameComponent implements AfterViewInit {
       throw new Error("Could not find the game board");
     }
 
+    const playerHand = this.playerHand;
+    if (playerHand === undefined) {
+      throw new Error("Could not find player hand");
+    }
+
     this.isGameOver = false;
     const params = this.route.snapshot.params as MemoryGameActivatedRouteParams;
 
     this.deck = await this.getNewCards();
     this.players = [
-      new MemoryGameHumanPlayer(memoryGameBoard),
+      new MemoryGameHumanPlayer(memoryGameBoard, playerHand),
       new MemoryGameAiPlayer(this.deck.slice(), params[DIFFICULTY_ROUTE_PARAM]),
     ];
     this.playGame().then(() => {
       this.isGameOver = true;
+    }).catch((error) => {
+      throw error;
     });
   }
 
   private async playGame(): Promise<void> {
     while (!isDeckEmpty(this.deck)) {
       for (const player of this.players) {
-        const { card: firstGuessedCard, position: firstGuessedPosition } = await this.getPlayerFirstGuessResult(player);
+        const { card: firstGuessedCard, position: firstGuessedPosition } = await this.getMainPhaseOneResult(player);
         this.players.forEach((player) => player.rememberContentAtPosition(firstGuessedCard, firstGuessedPosition));
 
         const { card: secondGuessedCard, position: secondGuessedPosition } = await this.getPlayerSecondGuessResult(player, firstGuessedPosition);
@@ -83,6 +97,23 @@ export class MemoryGameComponent implements AfterViewInit {
     }
   }
 
+  private async getMainPhaseOneResult(player: MemoryGamePlayer): Promise<MemoryGameGuessResult> {
+    const gameActionResult = await Promise.any([
+      this.getPlayerFirstGuessResult(player).then((result) => ({ result, action: GameAction.GUESS_CARD })),
+      this.getPlayerPlayedCardResult(player).then((result) => ({ result, action: GameAction.PLAY_CARD })),
+    ]);
+    
+    if (gameActionResult.action === GameAction.GUESS_CARD) {
+      flipCardFaceUp(gameActionResult.result.card);
+      return gameActionResult.result;
+    } else {
+      await this.playCard(player, gameActionResult.result.position);
+      const firstGuessResult = await this.getPlayerFirstGuessResult(player);
+      flipCardFaceUp(firstGuessResult.card);
+      return firstGuessResult;
+    }
+  }
+
   private async getPlayerFirstGuessResult(player: MemoryGamePlayer): Promise<MemoryGameGuessResult> {
     let firstGuessedCard: DeckSlotContent = null;
     let firstGuessedPosition: number;
@@ -91,11 +122,34 @@ export class MemoryGameComponent implements AfterViewInit {
       firstGuessedCard = this.deck[firstGuessedPosition];
     } while (firstGuessedCard === null);
     
-    flipCardFaceUp(firstGuessedCard);
     return {
       card: firstGuessedCard,
       position: firstGuessedPosition,
     };
+  }
+
+  private async getPlayerPlayedCardResult(player: MemoryGamePlayer): Promise<MemoryGameGuessResult> {
+    const playedCardPosition = await player.getPlayedCardFromHandPosition();
+    const playedCard = player.hand[playedCardPosition];
+
+    return {
+      card: playedCard,
+      position: playedCardPosition,
+    };
+  }
+
+  private async playCard(player: MemoryGamePlayer, playedCardPosition: number): Promise<void> {
+    const playedCard = player.hand[playedCardPosition];
+    player.hand = removeCardsFromHand(player.hand, [playedCard]);
+
+    await this.dialog.open(ResolveCardEffectDialogComponent, {
+      minWidth: "80vw",
+      data: {
+        card: playedCard,
+        deck: this.deck,
+        players: this.players,
+      },
+    }).afterClosed().toPromise();
   }
 
   private async getPlayerSecondGuessResult(player: MemoryGamePlayer, firstGuessedPosition: number): Promise<MemoryGameGuessResult> {
@@ -133,8 +187,8 @@ export class MemoryGameComponent implements AfterViewInit {
     const uniqueCardImages = await this.waifuApiService.getWaifus();
 
     // Create pairs of cards
-    const uniqueCards: Card[] = uniqueCardImages.map((imageUrl) => ({ imageUrl, shownFace: CardFace.BACK }));
-    const uniqueCardDupes: Card[] = uniqueCardImages.map((imageUrl) => ({ imageUrl, shownFace: CardFace.BACK }));
+    const uniqueCards: Card[] = uniqueCardImages.map((imageUrl) => ({ imageUrl, shownFace: CardFace.BACK, effect: CardEffect.REVEAL }));
+    const uniqueCardDupes: Card[] = uniqueCardImages.map((imageUrl) => ({ imageUrl, shownFace: CardFace.BACK, effect: CardEffect.REVEAL }));
     const pairedCards = uniqueCards.concat(uniqueCardDupes);
 
     return shuffleArray(pairedCards);
@@ -159,6 +213,9 @@ export class MemoryGameComponent implements AfterViewInit {
         throw new Error("Function not implemented.");
       },
       rememberContentAtPosition: function (_content: DeckSlotContent, _position: number): void {
+        throw new Error("Function not implemented.");
+      },
+      getPlayedCardFromHandPosition: function (): Promise<number> {
         throw new Error("Function not implemented.");
       },
     };
