@@ -2,6 +2,7 @@
   <div class="d-flex justify-content-center align-items-center card-hand">
     <div *ngFor="let card of cards; index as position" class="card-slot">
       <mmb-memory-game-card
+        role="button"
         [card]="card"
         (click)="handlePositionClicked(position)"
       ></mmb-memory-game-card>

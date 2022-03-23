@@ -25,6 +25,30 @@ img {
   padding-left: 1px;
 }
 
+.mmb-card {
+  position: relative;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
+
+  &.flip {
+    transform: rotateY(180deg);
+  }
+}
+
+.mmb-card-front, .mmb-card-back {
+  backface-visibility: hidden;
+}
+
+.mmb-card-back {
+  transform: rotateY(180deg);
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
 .card-back-pattern {
   border: white solid 0.8vw;
   background:

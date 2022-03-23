@@ -9,7 +9,7 @@ import { getCardEffectIcon } from "../card-effects/card-effect-icons";
   styleUrls: ["./memory-game-card.component.scss"],
 })
 export class MemoryGameCardComponent {
-  public _card: Card | undefined;
+  public _card: Card = { shownFace: CardFace.BACK } as Card;
   @Input() set card(card: Card) {
     this._card = card;
     this.effectIcon = `ion ion-md-${getCardEffectIcon(card.effect)}`;
