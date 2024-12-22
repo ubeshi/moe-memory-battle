@@ -1,5 +1,5 @@
-import * as WebSocket from "ws";
-import * as EventEmitter from "events";
+import WebSocket from "ws";
+import EventEmitter from "events";
 
 import { WaifuLabsSocketEvent, WaifuLabsSocketMetadata, WaifuLabsSocketResponse, WaifuLabsSocketResponseData, WaifuLabsSocketScope } from "./waifulabs";
 import { WaifuLabsCredentials } from "./waifu-labs-credentials";

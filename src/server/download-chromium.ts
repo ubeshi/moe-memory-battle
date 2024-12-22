@@ -3,10 +3,10 @@ import { format } from "util";
 import * as fs from "fs";
 import { promises as fsPromises } from "fs";
 import got from "got";
-import * as pipe from "promisepipe";
-import * as extract from "extract-zip";
-import * as cpr from "cpr";
-import * as mkdirp from "mkdirp";
+import pipe from "promisepipe";
+import extract from "extract-zip";
+import cpr from "cpr";
+import mkdirp from "mkdirp";
 import { Stream } from "stream";
 
 // Windows archive name changed at r591479.
