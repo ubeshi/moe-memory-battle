@@ -9,7 +9,7 @@
 <ng-template #cardFront>
   <div class="mmb-card-front">
     <div *ngIf="_frontImage" class="rounded">
-      <img class="img-fluid" [src]="_frontImage"/>
+      <img class="img-fluid" [src]="_frontImage" alt="card front"/>
       <span [ngClass]="[effectIcon, 'icon']"></span>
     </div>
     <span *ngIf="!_frontImage">Front</span>
@@ -18,7 +18,7 @@
 
 <ng-template #cardBack>
   <div class="mmb-card-back">
-    <img *ngIf="_backImage" class="img-fluid rounded" [src]="_backImage"/>
+    <img *ngIf="_backImage" class="img-fluid rounded" [src]="_backImage" alt="card back"/>
     <div *ngIf="!_backImage" class="w-100 h-100 d-flex justify-content-center align-items-center card-back-pattern">
       <span>?</span>
     </div>

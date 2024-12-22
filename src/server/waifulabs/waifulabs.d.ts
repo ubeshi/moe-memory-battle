@@ -19,7 +19,7 @@ export interface WaifuLabsSessionTokens {
 
 export interface GenerateGridResponse {
   data: {
-    newGirls: Array<ResponseWaifu>;
+    newGirls: ResponseWaifu[];
   };
 }
 
