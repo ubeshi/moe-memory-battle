@@ -40,7 +40,7 @@ const downloadURLs = {
  */
 export async function downloadChromium({
   platform: platform = getCurrentPlatform(),
-  revision: revision = "499413",
+  revision: revision = "1399578",
   log: log = false,
   installPath: installPath = `${__dirname}/.local-chromium`,
 } = {}) {
