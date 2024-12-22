@@ -6,8 +6,9 @@ import { getCardEffectDescription } from "../../card-effects/card-effect-descrip
 import { getCardEffectName } from "../../card-effects/card-effect-names";
 
 @Component({
-  selector: "mmb-resolve-card-effect-dialog",
-  templateUrl: "./resolve-card-effect.dialog.html",
+    selector: "mmb-resolve-card-effect-dialog",
+    templateUrl: "./resolve-card-effect.dialog.html",
+    standalone: false
 })
 export class ResolveCardEffectDialogComponent {
   public CardEffect = CardEffect;

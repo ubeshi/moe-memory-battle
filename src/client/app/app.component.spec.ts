@@ -1,8 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { AppComponent } from "./app.component";
-import { MockComponent } from "ng-mocks";
-import { MemoryGameComponent } from "./memory-game/memory-game.component";
 
 describe("AppComponent", () => {
   beforeEach(async () => {
@@ -12,7 +10,6 @@ describe("AppComponent", () => {
       ],
       declarations: [
         AppComponent,
-        MockComponent(MemoryGameComponent),
       ],
     }).compileComponents();
   });
