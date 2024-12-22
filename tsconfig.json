@@ -15,20 +15,29 @@
     "moduleResolution": "node",
     "skipLibCheck": true,
     "importHelpers": true,
-    "target": "es2020",
+    "target": "ES2022",
     "module": "es2020",
     "lib": [
       "es2021",
       "dom"
     ],
     "paths": {
-      "@common/*": ["./src/common/*"],
-      "@client/*": ["./src/client/*"],
-      "@server/*": ["./src/server/*"],
+      "@common/*": [
+        "./src/common/*"
+      ],
+      "@client/*": [
+        "./src/client/*"
+      ],
+      "@server/*": [
+        "./src/server/*"
+      ]
     },
     "plugins": [
-      { "transform": "typescript-transform-paths" }
-    ]
+      {
+        "transform": "typescript-transform-paths"
+      }
+    ],
+    "useDefineForClassFields": false
   },
   "include": [
     "./src"
