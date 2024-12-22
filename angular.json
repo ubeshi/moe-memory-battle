@@ -76,10 +76,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "moe-memory-battle:build:production"
+              "buildTarget": "moe-memory-battle:build:production"
             },
             "development": {
-              "browserTarget": "moe-memory-battle:build:development"
+              "buildTarget": "moe-memory-battle:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -87,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "moe-memory-battle:build"
+            "buildTarget": "moe-memory-battle:build"
           }
         },
         "test": {
