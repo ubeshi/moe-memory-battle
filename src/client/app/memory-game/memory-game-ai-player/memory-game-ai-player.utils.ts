@@ -86,7 +86,7 @@ export function forgetCard(card: Card): void {
   card.shownFace = CardFace.BACK;
 }
 
-export function shuffleArray<T>(array: Array<T>): Array<T> {
+export function shuffleArray<T>(array: T[]): T[] {
   array = array.slice();
   for (let index = array.length - 1; index > 0; index--) {
     const randomIndex = Math.floor(Math.random() * (index + 1));

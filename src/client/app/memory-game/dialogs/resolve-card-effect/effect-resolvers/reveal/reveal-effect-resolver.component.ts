@@ -4,8 +4,9 @@ import { Deck } from "@common/typings/card";
 import { MemoryGamePlayer } from "@common/typings/player";
 
 @Component({
-  selector: "mmb-reveal-effect-resolver",
-  templateUrl: "./reveal-effect-resolver.component.html",
+    selector: "mmb-reveal-effect-resolver",
+    templateUrl: "./reveal-effect-resolver.component.html",
+    standalone: false
 })
 export class RevealEffectResolverComponent {
   @Input() deck: Deck = [];

@@ -18,9 +18,10 @@ const TURN_END_DELAY = 1000;
 const DECK_SIZE = 32;
 
 @Component({
-  selector: "mmb-memory-game",
-  templateUrl: "./memory-game.component.html",
-  styleUrls: ["./memory-game.component.scss"],
+    selector: "mmb-memory-game",
+    templateUrl: "./memory-game.component.html",
+    styleUrls: ["./memory-game.component.scss"],
+    standalone: false
 })
 export class MemoryGameComponent implements AfterViewInit {
   public deck: Deck = this.getStubDeck(DECK_SIZE);

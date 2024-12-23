@@ -4,9 +4,10 @@ import { Card, CardFace } from "@common/typings/card";
 import { getCardEffectIcon } from "../card-effects/card-effect-icons";
 
 @Component({
-  selector: "mmb-memory-game-card",
-  templateUrl: "./memory-game-card.component.html",
-  styleUrls: ["./memory-game-card.component.scss"],
+    selector: "mmb-memory-game-card",
+    templateUrl: "./memory-game-card.component.html",
+    styleUrls: ["./memory-game-card.component.scss"],
+    standalone: false
 })
 export class MemoryGameCardComponent {
   public _card: Card = { shownFace: CardFace.BACK } as Card;

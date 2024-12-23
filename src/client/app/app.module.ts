@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { CommonModule } from "@angular/common";
@@ -20,28 +20,21 @@ import { ResolveCardEffectDialogComponent } from "./memory-game/dialogs/resolve-
 import { MatDialogModule } from "@angular/material/dialog";
 
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    MainMenuComponent,
-    MemoryGameComponent,
-    MemoryGameBoardComponent,
-    MemoryGameCardComponent,
-    MemoryGameHandComponent,
-    ResolveCardEffectDialogComponent,
-    RevealEffectResolverComponent,
-  ],
-  imports: [
-    BrowserModule,
-    CommonModule,
-    AppRoutingModule,
-    RouterModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    MatButtonModule,
-    MatDialogModule,
-  ],
-  providers: [],
-  bootstrap: [AppComponent],
-})
+@NgModule({ declarations: [
+        AppComponent,
+        MainMenuComponent,
+        MemoryGameComponent,
+        MemoryGameBoardComponent,
+        MemoryGameCardComponent,
+        MemoryGameHandComponent,
+        ResolveCardEffectDialogComponent,
+        RevealEffectResolverComponent,
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        CommonModule,
+        AppRoutingModule,
+        RouterModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatDialogModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

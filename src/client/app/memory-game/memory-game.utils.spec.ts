@@ -1,4 +1,3 @@
-import { fakeAsync, flush, tick } from "@angular/core/testing";
 import { Card, CardEffect, CardFace, Deck } from "@common/typings/card";
 import {
   flipCardFaceDown,
@@ -17,14 +16,14 @@ import {
 describe("memory-game utils", () => {
   describe("isNotNull()", () => {
     it("should return false when the input is null", () => {
-      expect(isNotNull(null)).toBeFalse();
+      expect(isNotNull(null)).toBe(false);
     });
 
     it("should return true when the input is not null", () => {
-      expect(isNotNull(0)).toBeTrue();
-      expect(isNotNull("foobar")).toBeTrue();
-      expect(isNotNull({})).toBeTrue();
-      expect(isNotNull(undefined)).toBeTrue();
+      expect(isNotNull(0)).toBe(true);
+      expect(isNotNull("foobar")).toBe(true);
+      expect(isNotNull({})).toBe(true);
+      expect(isNotNull(undefined)).toBe(true);
     });
   });
 
@@ -59,9 +58,9 @@ describe("memory-game utils", () => {
 
       const resultDeck = getFaceUpCardsFromDeck(mockDeck);
 
-      expect(resultDeck.includes(faceUpCard1)).toBeTrue();
-      expect(resultDeck.includes(faceUpCard2)).toBeTrue();
-      expect(resultDeck.includes(faceUpCard3)).toBeTrue();
+      expect(resultDeck.includes(faceUpCard1)).toBe(true);
+      expect(resultDeck.includes(faceUpCard2)).toBe(true);
+      expect(resultDeck.includes(faceUpCard3)).toBe(true);
       expect(resultDeck.length).toBe(3);
     });
   });
@@ -97,32 +96,31 @@ describe("memory-game utils", () => {
 
       const resultDeck = getFaceDownCardsFromDeck(mockDeck);
 
-      expect(resultDeck.includes(faceDownCard1)).toBeTrue();
-      expect(resultDeck.includes(faceDownCard2)).toBeTrue();
-      expect(resultDeck.includes(faceDownCard3)).toBeTrue();
+      expect(resultDeck.includes(faceDownCard1)).toBe(true);
+      expect(resultDeck.includes(faceDownCard2)).toBe(true);
+      expect(resultDeck.includes(faceDownCard3)).toBe(true);
       expect(resultDeck.length).toBe(3);
     });
   });
 
   describe("wait()", () => {
-    it("should not resolve before the time has expired", fakeAsync(() => {
+    it("should not resolve before the time has expired", async () => {
       let isWaitComplete = false;
 
       wait(1000).then(() => isWaitComplete = true);
-      tick(999);
+      await jest.advanceTimersByTimeAsync(999);
 
-      expect(isWaitComplete).toBeFalse();
-      flush();
-    }));
+      expect(isWaitComplete).toBe(false);
+    });
 
-    it("should resolve when the time has expired", fakeAsync(() => {
+    it("should resolve when the time has expired", async () => {
       let isWaitComplete = false;
 
       wait(1000).then(() => isWaitComplete = true);
-      tick(1000);
+      await jest.advanceTimersByTimeAsync(1000);
 
-      expect(isWaitComplete).toBeTrue();
-    }));
+      expect(isWaitComplete).toBe(true);
+    });
   });
 
   describe("getDeckCopy()", () => {
@@ -141,7 +139,7 @@ describe("memory-game utils", () => {
       const resultDeck = getDeckCopy(mockDeck);
       expect(resultDeck).not.toBe(mockDeck);
       expect(resultDeck[0]).not.toBe(mockDeck[0]);
-      
+
     });
 
     it("should return a deck of items with the same values", () => {
@@ -165,7 +163,7 @@ describe("memory-game utils", () => {
       } as Card;
     });
 
-    it("should return null if the content of null", () => {
+    it("should return null if the content is null", () => {
       expect(getDeckSlotCopy(null)).toBeNull();
     });
 
@@ -220,22 +218,22 @@ describe("memory-game utils", () => {
 
     it("should return a deck without the removed cards", () => {
       const returnedDeck = removeCardsFromDeck(mockDeck, [mockCard1]);
-      expect(returnedDeck.includes(mockCard1)).toBeFalse();
+      expect(returnedDeck.includes(mockCard1)).toBe(false);
     });
 
     it("should return a deck with the cards that were not removed", () => {
       const returnedDeck = removeCardsFromDeck(mockDeck, [mockCard1]);
-      expect(returnedDeck.includes(mockCard2)).toBeTrue();
+      expect(returnedDeck.includes(mockCard2)).toBe(true);
     });
   });
 
   describe("isDeckEmpty()", () => {
     it("should return true if there are no items in the deck", () => {
-      expect(isDeckEmpty([])).toBeTrue();
+      expect(isDeckEmpty([])).toBe(true);
     });
 
     it("should return true if all items are null", () => {
-      expect(isDeckEmpty([null, null, null, null])).toBeTrue();
+      expect(isDeckEmpty([null, null, null, null])).toBe(true);
     });
 
     it("should return false if not all items are null", () => {
@@ -244,7 +242,7 @@ describe("memory-game utils", () => {
         shownFace: CardFace.FRONT,
       } as Card;
 
-      expect(isDeckEmpty([null, null, mockCard, null])).toBeFalse();
+      expect(isDeckEmpty([null, null, mockCard, null])).toBe(false);
     });
   });
 

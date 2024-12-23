@@ -4,9 +4,10 @@ import { MemoryGameController } from "@common/typings/player";
 import { Observable, Subject } from "rxjs";
 
 @Component({
-  selector: "mmb-memory-game-hand",
-  templateUrl: "./memory-game-hand.component.html",
-  styleUrls: ["./memory-game-hand.component.scss"],
+    selector: "mmb-memory-game-hand",
+    templateUrl: "./memory-game-hand.component.html",
+    styleUrls: ["./memory-game-hand.component.scss"],
+    standalone: false
 })
 export class MemoryGameHandComponent implements MemoryGameController {
   @Input() cards: Card[] = [];
