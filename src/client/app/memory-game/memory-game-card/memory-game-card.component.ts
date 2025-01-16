@@ -3,10 +3,10 @@ import { SafeUrl } from "@angular/platform-browser";
 import { Card, CardFace, CardFieldSlot } from "@common/typings/card";
 
 @Component({
-    selector: "mmb-memory-game-card",
-    templateUrl: "./memory-game-card.component.html",
-    styleUrls: ["./memory-game-card.component.scss"],
-    standalone: false
+  selector: "mmb-memory-game-card",
+  templateUrl: "./memory-game-card.component.html",
+  styleUrls: ["./memory-game-card.component.scss"],
+  standalone: false,
 })
 export class MemoryGameCardComponent {
   public _cardFieldSlot = input.required<CardFieldSlot>({ alias: "cardFieldSlot" });

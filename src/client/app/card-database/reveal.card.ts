@@ -31,4 +31,4 @@ export const revealCard: Card = {
       },
     },
   ],
-}
+};

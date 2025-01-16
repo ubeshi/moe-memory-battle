@@ -19,18 +19,18 @@ import { MemoryGameTwoComponent } from "./memory-game/memory-game-two.component"
 
 
 @NgModule({ declarations: [
-        AppComponent,
-        MainMenuComponent,
-        MemoryGameTwoComponent,
-        MemoryGameBoardComponent,
-        MemoryGameCardComponent,
-        MemoryGameHandComponent,
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        CommonModule,
-        AppRoutingModule,
-        RouterModule,
-        BrowserAnimationsModule,
-        MatButtonModule,
-        MatDialogModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+  AppComponent,
+  MainMenuComponent,
+  MemoryGameTwoComponent,
+  MemoryGameBoardComponent,
+  MemoryGameCardComponent,
+  MemoryGameHandComponent,
+],
+bootstrap: [AppComponent], imports: [BrowserModule,
+  CommonModule,
+  AppRoutingModule,
+  RouterModule,
+  BrowserAnimationsModule,
+  MatButtonModule,
+  MatDialogModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

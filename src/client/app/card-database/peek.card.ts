@@ -27,9 +27,9 @@ export const peekCard: Card = {
             type: CardEffectStepType.SHOW_CARDS_TO_PLAYERS,
             getTargetCardsFromKey: "peekedCard",
             getTargetPlayersFromKey: TARGET_PLAYER_SELF_KEY,
-          }
+          },
         ],
       },
     },
   ],
-}
+};

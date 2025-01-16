@@ -11,7 +11,7 @@ import { wait } from "./memory-game.utils";
   selector: "mmb-memory-game-two",
   templateUrl: "./memory-game-two.component.html",
   styleUrl: "./memory-game-two.component.scss",
-  standalone: false
+  standalone: false,
 })
 export class MemoryGameTwoComponent {
   private readonly memoryGameService = inject(MemoryGameService);
@@ -126,7 +126,7 @@ export class MemoryGameTwoComponent {
     if (isCardFaceUp) {
       actions.push({
         label: "Info",
-        callback: () => { console.log(`Card info`, { card }) },
+        callback: () => { console.log("Card info", { card }); },
       });
     }
 
@@ -144,7 +144,7 @@ export class MemoryGameTwoComponent {
         // add the card to the flip phase one guesses
         turn.flipPhaseOneGuesses.push(fieldSlot);
       },
-    }
+    };
 
     const guessTwoAction = {
       label: "Guess 2",
@@ -156,7 +156,7 @@ export class MemoryGameTwoComponent {
         // add the card to the flip phase two guesses
         turn.flipPhaseTwoGuesses.push(fieldSlot);
       },
-    }
+    };
 
     switch (phase.type) {
       case TurnPhaseType.PLAY_CARD_PHASE: {

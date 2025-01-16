@@ -18,7 +18,7 @@ export class MemoryGameService {
     return {
       slots: this.utilitiesService
         .getRange(0, MemoryGameService.FIELD_SIZE)
-        .map(() => this.getEmptyFieldSlot())
+        .map(() => this.getEmptyFieldSlot()),
     };
   }
 
@@ -50,7 +50,7 @@ export class MemoryGameService {
       [CardZoneType.DISCARD]: { cards: [] },
       [CardZoneType.MATCH]: { cards: [] },
     };
-  };
+  }
 
   public getInitialField(decks: Deck[]): Field {
     const fieldCards = decks
