@@ -1,7 +1,6 @@
-import { Component, Input, Output } from "@angular/core";
-import { Deck } from "@common/typings/card";
-import { MemoryGameController } from "@common/typings/player";
-import { Observable, Subject } from "rxjs";
+import { Component, ElementRef, input, output } from "@angular/core";
+import { FieldSlotType } from "@common/typings/card";
+import { MemoryGame } from "@common/typings/memory-game";
 
 @Component({
     selector: "mmb-memory-game-board",
@@ -9,15 +8,13 @@ import { Observable, Subject } from "rxjs";
     styleUrls: ["./memory-game-board.component.scss"],
     standalone: false
 })
-export class MemoryGameBoardComponent implements MemoryGameController {
-  @Input() deck: Deck = [];
+export class MemoryGameBoardComponent {
+  public _memoryGame = input.required<MemoryGame>({ alias: "memoryGame" });
+  public positionClicked = output<{ position: number, elementRef: ElementRef }>();
 
-  private _positionClicked = new Subject<number>();
-  @Output() public get positionClicked(): Observable<number> {
-    return this._positionClicked.asObservable();
-  }
+  public FieldSlotType = FieldSlotType;
 
-  public handlePositionClicked(position: number): void {
-    this._positionClicked.next(position);
+  public handlePositionClicked(position: number, elementRef: ElementRef): void {
+    this.positionClicked.emit({ position, elementRef });
   }
 }

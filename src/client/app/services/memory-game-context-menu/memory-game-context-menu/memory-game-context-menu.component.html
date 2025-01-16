@@ -1,0 +1,5 @@
+<mat-card class="flex flex-column">
+  @for (action of actions; track $index) {
+    <button mat-button (click)="handleActionClicked(action)">{{ action.label }}</button>
+  }
+</mat-card>

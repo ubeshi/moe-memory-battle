@@ -14,21 +14,17 @@ import { MainMenuComponent } from "./main-menu/main-menu.component";
 import { MemoryGameBoardComponent } from "./memory-game/memory-game-board/memory-game-board.component";
 import { MemoryGameCardComponent } from "./memory-game/memory-game-card/memory-game-card.component";
 import { MemoryGameHandComponent } from "./memory-game/memory-game-hand/memory-game-hand.component";
-import { MemoryGameComponent } from "./memory-game/memory-game.component";
-import { RevealEffectResolverComponent } from "./memory-game/dialogs/resolve-card-effect/effect-resolvers/reveal/reveal-effect-resolver.component";
-import { ResolveCardEffectDialogComponent } from "./memory-game/dialogs/resolve-card-effect/resolve-card-effect.dialog";
 import { MatDialogModule } from "@angular/material/dialog";
+import { MemoryGameTwoComponent } from "./memory-game/memory-game-two.component";
 
 
 @NgModule({ declarations: [
         AppComponent,
         MainMenuComponent,
-        MemoryGameComponent,
+        MemoryGameTwoComponent,
         MemoryGameBoardComponent,
         MemoryGameCardComponent,
         MemoryGameHandComponent,
-        ResolveCardEffectDialogComponent,
-        RevealEffectResolverComponent,
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         CommonModule,

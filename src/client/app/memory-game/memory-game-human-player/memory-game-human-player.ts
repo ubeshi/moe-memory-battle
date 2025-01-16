@@ -1,4 +1,4 @@
-import { Card, DeckSlotContent } from "@common/typings/card";
+import { Card, FieldSlot } from "@common/typings/card";
 import { MemoryGameController, MemoryGamePlayer } from "@common/typings/player";
 import { filter, take } from "rxjs/operators";
 
@@ -28,7 +28,7 @@ export class MemoryGameHumanPlayer implements MemoryGamePlayer {
     return this.handController.positionClicked.pipe(take(1)).toPromise();
   }
 
-  public rememberContentAtPosition(_content: DeckSlotContent, _position: number) {
+  public rememberContentAtPosition(_content: FieldSlot, _position: number) {
     // Left as an excercise to the player
   }
 }

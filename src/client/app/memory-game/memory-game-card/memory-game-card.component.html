@@ -1,9 +1,11 @@
+@let cardFieldSlot = _cardFieldSlot();
+@let card = cardFieldSlot.card;
 <div
-  [ngClass]="{ 'flip': _card.shownFace === CardFace.BACK }"
+  [ngClass]="{ 'flip': cardFieldSlot.shownFace === CardFace.FRONT }"
   class="w-100 h-100 rounded border border-dark shadow-sm mmb-card"
 >
-  <ng-container *ngTemplateOutlet="cardFront"></ng-container>
-  <ng-container *ngTemplateOutlet="cardBack"></ng-container>
+  <ng-container *ngTemplateOutlet="cardBack"/>
+  <ng-container *ngTemplateOutlet="cardFront"/>
 </div>
 
 <ng-template #cardFront>

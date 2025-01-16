@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "node ./dist/server/index.js",
+    "serve": "npx ng serve",
     "build": "npm run build-client && npm run build-common && npm run build-server",
     "build:prod": "npm run build-client:prod && npm run build-common && npm run build-server",
     "build-client": "rimraf ./dist/client/* && ng build",

@@ -41,6 +41,10 @@ img {
 }
 
 .mmb-card-back {
+  height: 100%;
+}
+
+.mmb-card-front {
   transform: rotateY(180deg);
   position: absolute;
   top: 0;

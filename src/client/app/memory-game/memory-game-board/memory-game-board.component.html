@@ -1,10 +1,22 @@
+@let memoryGame = _memoryGame();
+@let field = memoryGame.field;
 <div class="row row-cols-8 g-0">
-  <div class="card-slot" *ngFor="let card of deck; index as position">
-    <mmb-memory-game-card *ngIf="card !== null"
-      class="mmb-card"
-      role="button"
-      [card]="card"
-      (click)="handlePositionClicked(position)"
-    ></mmb-memory-game-card>
-  </div>
+  @for (fieldSlot of field.slots; track $index; let fieldSlotIndex = $index) {
+    @switch (fieldSlot.type) {
+      @case (FieldSlotType.CARD) {
+        <div class="card-slot">
+          <mmb-memory-game-card
+            #card
+            class="mmb-card"
+            role="button"
+            [cardFieldSlot]="fieldSlot"
+            (click)="handlePositionClicked(fieldSlotIndex, card.elementRef)"
+          />
+        </div>
+      }
+      @case (FieldSlotType.EMPTY) {
+        <div class="empty-slot"></div>
+      }
+    }
+  }
 </div>
