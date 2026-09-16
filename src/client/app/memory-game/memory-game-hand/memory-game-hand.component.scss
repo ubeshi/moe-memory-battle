@@ -1,4 +1,4 @@
-$hand-container-height-scale: 12.5%;
+$hand-container-height-scale: 12.5dvh;
 
 .card-hand-container {
   padding-top: $hand-container-height-scale;
@@ -16,6 +16,8 @@ $hand-container-height-scale: 12.5%;
 
 .card-slot {
   max-width: $hand-container-height-scale;
+  width: $hand-container-height-scale;
+  height: $hand-container-height-scale;
   transform: scale(0.9);
   transition: all 0.2s;
 

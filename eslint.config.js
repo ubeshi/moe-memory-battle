@@ -43,6 +43,8 @@ module.exports = tseslint.config(
         }
       ],
       "@angular-eslint/prefer-standalone": "warn",
+      "@angular-eslint/no-input-rename": "off",
+      "@typescript-eslint/consistent-indexed-object-style": "off",
     },
   },
   {

@@ -1,25 +1,21 @@
 import { Card, CardFieldSlot, CardZoneType, Field } from "./card";
-import { Player, PlayerControlType } from "./player";
+import { Player } from "./player";
 
 export const MAXIMUM_PENALTY_MARKS = 3;
 export const MAXIMUM_PENALTY_POINTS = 2;
 
 export interface MemoryGame {
   playerSlots: PlayerSlot[];
-  turnBuffer: Turn[];
-  playerZones: {
-    [key in PlayerId]: PlayerZones;
-  };
+  turns: Turn[];
+  currentTurnIndex: number;
+  currentTurnPhaseIndex: number;
+  playerZones: Record<PlayerId, PlayerZones>;
   field: Field;
-  playerPenalties: {
-    [key in PlayerId]: {
-      penaltyMarks: number;
-      penaltyPoints: number;
-    };
-  };
-  playerTeams: {
-    [key in PlayerId]: PlayerTeam;
-  }
+  playerPenalties: Record<PlayerId, {
+    penaltyMarks: number;
+    penaltyPoints: number
+  }>;
+  teams: PlayerTeam[];
   lostTeams: PlayerTeam[];
 }
 
@@ -42,7 +38,7 @@ export enum PlayerTeam {
 
 export interface PlayerSlot {
   playerId: PlayerId;
-  controlType: PlayerControlType;
+  playerTeam: PlayerTeam;
   player: Player;
 }
 

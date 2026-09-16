@@ -1,6 +1,6 @@
-<div class="d-flex flex-column justify-content-between game-board">
+<div class="flex flex-col justify-between game-board">
   <mmb-memory-game-hand class="opponent-hand" [cards]="players[1].hand"></mmb-memory-game-hand>
-  <div class="container position-relative">
+  <div class="container relative">
     <mmb-memory-game-board #gameBoard
       [deck]="deck"
     ></mmb-memory-game-board>
@@ -15,7 +15,7 @@
 </div>
 
 <ng-template #gameSummaryScreen>
-  <div class="w-25 p-3 rounded border shadow text-center d-flex flex-column justify-content-center align-items-center bg-white game-summary">
+  <div class="w-25 p-3 rounded border shadow text-center flex flex-col justify-center items-center bg-white game-summary">
     <div class="h2">
       <span>
         You {{

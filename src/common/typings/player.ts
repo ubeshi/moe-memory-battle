@@ -1,6 +1,7 @@
 import { Observable } from "rxjs";
 import { Card, FieldSlot } from "./card";
 import { Deck } from "./deck";
+import { AiDifficulty } from "./ai-difficulty";
 
 export interface MemoryGamePlayer {
   hand: Card[];
@@ -24,8 +25,21 @@ export const enum GameAction {
   PLAY_CARD,
 }
 
-export interface Player {
+export interface BasePlayer {
   deck: Deck;
+  name: string;
+  controlType: PlayerControlType;
+}
+
+export type Player = HumanPlayer | AiPlayer;
+
+export interface HumanPlayer extends BasePlayer {
+  controlType: PlayerControlType.LOCAL_HUMAN;
+}
+
+export interface AiPlayer extends BasePlayer{
+  controlType: PlayerControlType.LOCAL_AI;
+  aiDifficulty: AiDifficulty;
 }
 
 export enum PlayerControlType {

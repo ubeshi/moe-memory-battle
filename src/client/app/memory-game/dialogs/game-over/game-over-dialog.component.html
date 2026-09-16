@@ -1,0 +1,32 @@
+<mat-card class="p-4">
+  <mat-card-title>{{ gameResultDescription }}</mat-card-title>
+  <mat-card-content>
+    <div class="flex gap-4 justify-between items-center">
+      @for (playerSlot of memoryGame.playerSlots; track $index; let playerSlotIndex = $index) {
+        @let playerId = playerSlot.playerId;
+        @let name = playerSlot.player.name;
+        <div class="flex-col gap-2">
+          <div><strong>{{ name }}</strong></div>
+          <div>hand: {{ memoryGame.playerZones[playerId][CardZoneType.HAND].cards.length }}</div>
+          <div>exhaust: {{ memoryGame.playerZones[playerId][CardZoneType.EXHAUST].cards.length }}</div>
+          <div>penalties: {{ -memoryGame.playerPenalties[playerId].penaltyPoints }}</div>
+          <hr>
+          <div>total: {{ memoryGame.playerZones[playerId][CardZoneType.HAND].cards.length + memoryGame.playerZones[playerId][CardZoneType.EXHAUST].cards.length - memoryGame.playerPenalties[playerId].penaltyPoints }}</div>
+        </div>
+      }
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions align="end" class="flex gap-4">
+    <button mat-raised-button
+      (click)="handleGameOverDialogActionClicked(GameOverDialogAction.REMATCH)"
+    >
+      Rematch
+    </button>
+    <button mat-raised-button
+      (click)="handleGameOverDialogActionClicked(GameOverDialogAction.MAIN_MENU)"
+    >
+      Main Menu
+    </button>
+  </mat-card-actions>
+</mat-card>

@@ -3,25 +3,18 @@ import {
   CardAbilityCostType,
   CardEffectStep,
   CardEffectStepType,
-  CardTargetCardType,
   CardTargetPlayerType,
   CardZoneType,
 } from "@common/typings/card";
 
 export const exhaustSelf: CardAbilityCost = {
-  type: CardAbilityCostType.MOVE_CARD_FROM_ZONE_TO_ZONE,
-  sourceZone: CardZoneType.HAND,
+  type: CardAbilityCostType.MOVE_CARD_SELF_TO_ZONE,
   destinationZone: CardZoneType.EXHAUST,
-  quantity: 1,
-  targetTypes: [CardTargetCardType.SELF],
 };
 
 export const discardSelf: CardAbilityCost = {
-  type: CardAbilityCostType.MOVE_CARD_FROM_ZONE_TO_ZONE,
-  sourceZone: CardZoneType.HAND,
+  type: CardAbilityCostType.MOVE_CARD_SELF_TO_ZONE,
   destinationZone: CardZoneType.DISCARD,
-  quantity: 1,
-  targetTypes: [CardTargetCardType.SELF],
 };
 
 export const TARGET_PLAYER_SELF_KEY = "targetPlayerSelf";
@@ -32,3 +25,8 @@ export const targetPlayerSelf: CardEffectStep = {
   quantity: 1,
   saveTargetPlayersToKey: TARGET_PLAYER_SELF_KEY,
 };
+
+export const clearTargetPlayerSelf: CardEffectStep = {
+  type: CardEffectStepType.CLEAR_PLAYER_TARGETS,
+  clearTargetPlayersFromKey: TARGET_PLAYER_SELF_KEY,
+}

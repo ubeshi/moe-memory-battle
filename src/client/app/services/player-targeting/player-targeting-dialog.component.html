@@ -1,0 +1,24 @@
+<mat-card class="p-4">
+  <mat-card-title>Select Players to Target</mat-card-title>
+  <mat-card-content>
+    <div class="flex flex-col gap-2">
+      @for (playerSlot of playerSlots; track playerSlot.playerId) {
+        <mat-checkbox
+          (change)="handlePlayerSlotSelectionChanged(playerSlot, $event.checked)"
+        >
+          {{playerSlot.player.name}}
+        </mat-checkbox>
+      }
+    </div>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    @let numberOfSelectedPlayerSlots = numberOfSelectedPlayerSlots$ | async;
+    <button mat-raised-button
+      color="primary"
+      [disabled]="numberOfSelectedPlayerSlots !== quantity"
+      (click)="handleConfirmTargetsClicked()"
+    >
+      Confirm Targets
+    </button>
+  </mat-card-actions>
+</mat-card>

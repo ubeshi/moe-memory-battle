@@ -1,7 +1,7 @@
 import { inject, Injectable } from "@angular/core";
-import { CardFace, CardZoneType, EmptyFieldSlot, Field, FieldSlotType } from "@common/typings/card";
+import { CardFace, CardFieldSlot, CardZoneType, EmptyFieldSlot, Field, FieldSlotType } from "@common/typings/card";
 import { UtilitiesService } from "../utilities/utilities.service";
-import { PlayerId, PlayerZones, Turn, TurnPhaseType } from "@common/typings/memory-game";
+import { MemoryGame, PlayerId, PlayerZones, Turn, TurnPhaseType } from "@common/typings/memory-game";
 import { Deck } from "@common/typings/deck";
 import { CardService } from "../card/card.service";
 
@@ -13,6 +13,17 @@ export class MemoryGameService {
   private readonly cardService = inject(CardService);
 
   private static readonly FIELD_SIZE = 32;
+  private static instance: MemoryGameService;
+
+  static getInstance(): MemoryGameService {
+    return MemoryGameService.instance;
+  }
+
+  constructor() {
+    if (!MemoryGameService.instance) {
+      MemoryGameService.instance = this;
+    }
+  }
 
   public getEmptyField(): Field {
     return {
@@ -61,9 +72,18 @@ export class MemoryGameService {
 
     const cardFieldShots = shuffledFieldCards.map((card) => ({
       type: FieldSlotType.CARD,
-      card,
-      shownFace: CardFace.BACK,
+      cardSlot: {
+        card,
+        shownFace: CardFace.BACK,
+      },
     }));
     return { slots: cardFieldShots };
+  }
+
+  public getGuessableCardSlots(memoryGame: MemoryGame): CardFieldSlot[] {
+    const turn = memoryGame.turns[memoryGame.currentTurnIndex];
+    const allCardSlots = memoryGame.field.slots.filter((slot): slot is CardFieldSlot => slot.type === FieldSlotType.CARD);
+    const guessedCardSlots = [...turn.flipPhaseOneGuesses, ...turn.flipPhaseTwoGuesses];
+    return allCardSlots.filter((slot) => !guessedCardSlots.includes(slot));
   }
 }

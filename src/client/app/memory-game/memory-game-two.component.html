@@ -1,59 +1,101 @@
-<div class="d-flex flex-column justify-content-between game-board">
-  <mmb-memory-game-hand
-    class="opponent-hand"
-    [cards]="memoryGame.playerZones[PlayerId.PLAYER_TWO][CardZoneType.HAND].cards"
-  />
-  <div class="container position-relative">
-    <mmb-memory-game-board
-      [memoryGame]="memoryGame"
-      (positionClicked)="handlePositionClicked(memoryGame, $event)"
+@if (memoryGame) {
+  @let currentTurn = memoryGame.getCurrentTurn() | async;
+  @let currentPhase = memoryGame.getCurrentPhase() | async;
+  @let isEndPhase = currentPhase?.type === TurnPhaseType.END_PHASE;
+  <div class="flex flex-col justify-between game-board">
+    {{ getPlayerNameById(memoryGame, PlayerId.PLAYER_TWO) }}
+    <mmb-memory-game-hand
+      class="opponent-hand"
+      [shownFace]="CardFace.BACK"
+      [cards]="memoryGame.playerZones[PlayerId.PLAYER_TWO][CardZoneType.HAND].cards"
     />
-    <!-- <ng-container *ngIf="isGameOver">
-      <ng-container *ngTemplateOutlet="gameSummaryScreen"></ng-container>
-    </ng-container> -->
-  </div>
-  <mmb-memory-game-hand #playerHand
-    class="player-hand"
-    [cards]="memoryGame.playerZones[PlayerId.PLAYER_ONE][CardZoneType.HAND].cards"
-  />
 
-  @let currentTurn = memoryGame.turnBuffer[0];
-  @let currentPhase = memoryGame.turnBuffer[0].phases[0];
-  @let currentPlayerId = currentTurn.playerId;
-  @let isPlayerOnePhase = currentPlayerId === PlayerId.PLAYER_ONE;
-  @if (isPlayerOnePhase) {
-    <div>DEBUG PLAYER ONE PHASE</div>
-    @switch (currentPhase.type) {
-      @case (TurnPhaseType.PLAY_CARD_PHASE) {
-        <div>PLAY CARD PHASE</div>
+    <div class="flex justify-between items-center">
+      <div>
+        <div>Player 2 penalties</div>
+        <div>marks: {{ memoryGame.playerPenalties[PlayerId.PLAYER_TWO].penaltyMarks }}</div>
+        <div>points: {{ memoryGame.playerPenalties[PlayerId.PLAYER_TWO].penaltyPoints }}</div>
+      </div>
+
+      <div>
+        <div>Player 2 points</div>
+        @let playerTwoPointsFromHand = memoryGame.playerZones[PlayerId.PLAYER_TWO][CardZoneType.HAND].cards.length;
+        @let playerTwoPointsFromExhaust = memoryGame.playerZones[PlayerId.PLAYER_TWO][CardZoneType.EXHAUST].cards.length;
+        @let playerTwoPenaltyPoints = memoryGame.playerPenalties[PlayerId.PLAYER_TWO].penaltyPoints;
+        <div>hand: {{ playerTwoPointsFromHand }}</div>
+        <div>exhaust: {{ playerTwoPointsFromExhaust }}</div>
+        <div>penalties: {{ -playerTwoPenaltyPoints }}</div>
+        <div>total: {{ playerTwoPointsFromHand + playerTwoPointsFromExhaust - playerTwoPenaltyPoints }}</div>
+      </div>
+    </div>
+
+    <div class="px-4">
+      <mmb-memory-game-board
+        [memoryGame]="memoryGame"
+        (positionClicked)="handleFieldPositionClicked(memoryGame, $event)"
+      />
+      <!-- <ng-container *ngIf="isGameOver">
+        <ng-container *ngTemplateOutlet="gameSummaryScreen"></ng-container>
+      </ng-container> -->
+    </div>
+
+    <div class="flex justify-between items-center">
+      <div>
+        <div>Player 1 penalties</div>
+        <div>marks: {{ memoryGame.playerPenalties[PlayerId.PLAYER_ONE].penaltyMarks }}</div>
+        <div>points: {{ memoryGame.playerPenalties[PlayerId.PLAYER_ONE].penaltyPoints }}</div>
+      </div>
+
+      <div>
+        <div>Player 1 points</div>
+        @let playerOnePointsFromHand = memoryGame.playerZones[PlayerId.PLAYER_ONE][CardZoneType.HAND].cards.length;
+        @let playerOnePointsFromExhaust = memoryGame.playerZones[PlayerId.PLAYER_ONE][CardZoneType.EXHAUST].cards.length;
+        @let playerOnePenaltyPoints = memoryGame.playerPenalties[PlayerId.PLAYER_ONE].penaltyPoints;
+        <div>hand: {{ playerOnePointsFromHand }}</div>
+        <div>exhaust: {{ playerOnePointsFromExhaust }}</div>
+        <div>penalties: {{ -playerOnePenaltyPoints }}</div>
+        <div>total: {{ playerOnePointsFromHand + playerOnePointsFromExhaust - playerOnePenaltyPoints }}</div>
+      </div>
+
+      @if (isEndPhase) {
+        <button mat-raised-button (click)="handleContinueToEndPhaseClicked(memoryGame)">Continue to End Phase</button>
       }
+      <div>
+        {{ cardTargetDescription$ | async }} {{ fieldSlotTargetDescription$ | async }}
+      </div>
+    </div>
+
+    <mmb-memory-game-hand #playerHand
+      class="player-hand"
+      [shownFace]="CardFace.FRONT"
+      [cards]="memoryGame.playerZones[PlayerId.PLAYER_ONE][CardZoneType.HAND].cards"
+      (positionClicked)="handlePlayerHandCardClicked(PlayerId.PLAYER_ONE, memoryGame, $event)"
+    />
+
+    @if (isWaitingForPlayerConfirmation$ | async) {
+      <button mat-raised-button (click)="handleConfirmClicked()">Confirm</button>
     }
-  }
-
-  @let isEndPhase = currentPhase.type === TurnPhaseType.END_PHASE;
-  @if (isEndPhase) {
-    <button mat-raised-button (click)="handleContinueToEndPhaseClicked(memoryGame)">Continue to End Phase</button>
-  }
-
-</div>
-
-<!-- <ng-template #gameSummaryScreen>
-  <div class="w-25 p-3 rounded border shadow text-center d-flex flex-column justify-content-center align-items-center bg-white game-summary">
-    <div class="h2">
-      <span>
-        You {{
-          players[0].hand.length === players[1].hand.length ?
-            "are equally matched!" :
-          players[0].hand.length > players[1].hand.length ?
-            "won!" :
-            "got 2nd place!"
-        }}
-      </span>
-    </div>
-    <div class="h3">{{ players[0].hand.length }} to {{ players[1].hand.length }}</div>
-    <div class="d-grid gap-1">
-      <button mat-raised-button (click)="startNewGame()">Play Again</button>
-      <button mat-raised-button (click)="handleReturnToMainMenuClicked()">Return to Main Menu</button>
-    </div>
+    <button mat-raised-button (click)="handleNewGameDebugClicked()">New Game Debug</button>
   </div>
-</ng-template> -->
+
+  <!-- <ng-template #gameSummaryScreen>
+    <div class="w-25 p-3 rounded border shadow text-center flex flex-col justify-center items-center bg-white game-summary">
+      <div class="h2">
+        <span>
+          You {{
+            players[0].hand.length === players[1].hand.length ?
+              "are equally matched!" :
+            players[0].hand.length > players[1].hand.length ?
+              "won!" :
+              "got 2nd place!"
+          }}
+        </span>
+      </div>
+      <div class="h3">{{ players[0].hand.length }} to {{ players[1].hand.length }}</div>
+      <div class="d-grid gap-1">
+        <button mat-raised-button (click)="startNewGame()">Play Again</button>
+        <button mat-raised-button (click)="handleReturnToMainMenuClicked()">Return to Main Menu</button>
+      </div>
+    </div>
+  </ng-template> -->
+}

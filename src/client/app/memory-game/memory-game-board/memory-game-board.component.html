@@ -1,21 +1,26 @@
 @let memoryGame = _memoryGame();
 @let field = memoryGame.field;
-<div class="row row-cols-8 g-0">
+<div class="grid grid-cols-8">
   @for (fieldSlot of field.slots; track $index; let fieldSlotIndex = $index) {
     @switch (fieldSlot.type) {
       @case (FieldSlotType.CARD) {
-        <div class="card-slot">
+        <div class="card-slot aspect-square">
+          @let cardFieldSlot = fieldSlot;
           <mmb-memory-game-card
-            #card
-            class="mmb-card"
+            #cardElement
+            class="mmb-card aspect-square"
             role="button"
-            [cardFieldSlot]="fieldSlot"
-            (click)="handlePositionClicked(fieldSlotIndex, card.elementRef)"
+            [cardSlot]="cardFieldSlot.cardSlot"
+            (click)="handlePositionClicked(fieldSlotIndex, cardElement.elementRef)"
           />
         </div>
       }
       @case (FieldSlotType.EMPTY) {
-        <div class="empty-slot"></div>
+        <mmb-memory-game-empty-slot
+          #emptySlotElement
+          role="button"
+          (click)="handlePositionClicked(fieldSlotIndex, emptySlotElement.elementRef)"
+        />
       }
     }
   }

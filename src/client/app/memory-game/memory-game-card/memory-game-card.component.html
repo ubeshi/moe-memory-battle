@@ -1,8 +1,9 @@
-@let cardFieldSlot = _cardFieldSlot();
-@let card = cardFieldSlot.card;
+@let cardSlot = _cardSlot();
+@let card = cardSlot.card;
+@let cardText = _cardText();
 <div
-  [ngClass]="{ 'flip': cardFieldSlot.shownFace === CardFace.FRONT }"
-  class="w-100 h-100 rounded border border-dark shadow-sm mmb-card"
+  [ngClass]="{ 'flip': cardSlot.shownFace === CardFace.FRONT }"
+  class="w-full h-full rounded-md border border-solid border-gray-700 shadow-sm mmb-card"
 >
   <ng-container *ngTemplateOutlet="cardBack"/>
   <ng-container *ngTemplateOutlet="cardFront"/>
@@ -14,14 +15,14 @@
       <img class="img-fluid" [src]="_frontImage" alt="card front"/>
       <span [ngClass]="[effectIcon, 'icon']"></span>
     </div>
-    <span *ngIf="!_frontImage">Front</span>
+    <span *ngIf="!_frontImage">{{ cardText }}</span>
   </div>
 </ng-template>
 
 <ng-template #cardBack>
   <div class="mmb-card-back">
     <img *ngIf="_backImage" class="img-fluid rounded" [src]="_backImage" alt="card back"/>
-    <div *ngIf="!_backImage" class="w-100 h-100 d-flex justify-content-center align-items-center card-back-pattern">
+    <div *ngIf="!_backImage" class="w-full h-full flex justify-center items-center card-back-pattern">
       <span>?</span>
     </div>
   </div>

@@ -1,12 +1,17 @@
 import { Component, ElementRef, input, output } from "@angular/core";
 import { FieldSlotType } from "@common/typings/card";
 import { MemoryGame } from "@common/typings/memory-game";
+import { MemoryGameCardComponent } from "../memory-game-card/memory-game-card.component";
+import { MemoryGameEmptySlotComponent } from "../memory-game-empty-slot/memory-game-empty-slot.component";
 
 @Component({
   selector: "mmb-memory-game-board",
   templateUrl: "./memory-game-board.component.html",
   styleUrls: ["./memory-game-board.component.scss"],
-  standalone: false,
+  imports: [
+    MemoryGameCardComponent,
+    MemoryGameEmptySlotComponent,
+  ],
 })
 export class MemoryGameBoardComponent {
   public _memoryGame = input.required<MemoryGame>({ alias: "memoryGame" });
